@@ -246,20 +246,11 @@ function renderCalendar(records) {
     const dayRecords = document.createElement("div");
     dayRecords.className = "day-records";
 
-    for (const r of recordsByDate.get(day.dateStr) || []) {
-      const item = document.createElement("div");
-      item.className = "day-record-item";
-      const hasValue = !isBlank(r.value) || !isBlank(r.unit);
-      item.textContent = hasValue ? `${r.item} · ${r.value}${r.unit}` : r.item;
-      item.title = item.textContent;
+    const dueChecklist = checklistItems.filter((item) => isChecklistDue(item, day.dateStr));
+    const dayRecordList = recordsByDate.get(day.dateStr) || [];
 
-      // 칸이 작아 목록에서는 요약만 보여주고, 클릭하면 상세 모달에서 전체 정보 + 수정·삭제를 보여준다.
-      item.addEventListener("click", () => openRecordDetail(r));
-
-      dayRecords.appendChild(item);
-    }
-
-    for (const c of checklistItems.filter((item) => isChecklistDue(item, day.dateStr))) {
+    // 체크리스트를 위쪽에 먼저 보여주고, 넘치는 항목은 칸 안에서 스크롤(스크롤바는 숨김)로 본다.
+    for (const c of dueChecklist) {
       const chip = document.createElement("label");
       chip.className = "day-checklist-item";
 
@@ -281,6 +272,19 @@ function renderCalendar(records) {
 
       chip.append(checkbox, text);
       dayRecords.appendChild(chip);
+    }
+
+    for (const r of dayRecordList) {
+      const item = document.createElement("div");
+      item.className = "day-record-item";
+      const hasValue = !isBlank(r.value) || !isBlank(r.unit);
+      item.textContent = hasValue ? `${r.item} · ${r.value}${r.unit}` : r.item;
+      item.title = item.textContent;
+
+      // 칸이 작아 목록에서는 요약만 보여주고, 클릭하면 상세 모달에서 전체 정보 + 수정·삭제를 보여준다.
+      item.addEventListener("click", () => openRecordDetail(r));
+
+      dayRecords.appendChild(item);
     }
 
     cell.appendChild(dayRecords);

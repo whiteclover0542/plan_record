@@ -423,7 +423,7 @@ td button {
 
 .calendar-day {
   background: var(--panel);
-  height: 7.5rem;
+  height: 8.75rem;
   padding: 0.35rem;
   font-size: 0.8rem;
   display: flex;
@@ -472,6 +472,12 @@ td button {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* 구형 Edge/IE */
+}
+
+.day-records::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 .day-record-item {
