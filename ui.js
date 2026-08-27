@@ -27,6 +27,9 @@ const weeklySkipped = document.getElementById("weekly-skipped");
 const viewToggleBtn = document.getElementById("view-toggle-btn");
 const calendarView = document.getElementById("calendar-view");
 const recordTable = document.getElementById("record-table");
+const checklistTableEl = document.getElementById("checklist-table");
+const checklistTableTitleEl = document.getElementById("checklist-table-title");
+const checklistTableEmptyEl = document.getElementById("checklist-table-empty");
 const calendarGrid = document.getElementById("calendar-grid");
 const calendarWeekdaysEl = document.getElementById("calendar-weekdays");
 const calMonthLabel = document.getElementById("cal-month-label");
@@ -137,6 +140,7 @@ function render() {
   schemaStatus.textContent = `데이터 형식: schemaVersion v${CURRENT_SCHEMA_VERSION} · v1 형식(태그 필드 없음)으로 저장·가져오기된 기록은 불러오는 즉시 자동으로 v${CURRENT_SCHEMA_VERSION}로 변환됩니다 (id·날짜·값·단위는 그대로 유지).`;
 
   renderWeeklySummary(records);
+  refreshChecklistTableVisibility();
 }
 
 function renderTable(records) {
@@ -292,12 +296,22 @@ function renderCalendar(records) {
   }
 }
 
+// 체크리스트는 기록(Records)과 별개인 checklist.js 소관 데이터라 여기서는
+// 표시 여부(hidden)만 켜고 끄고, 실제 행 렌더링은 renderChecklistTable()이 담당한다.
+function refreshChecklistTableVisibility() {
+  const isTableView = currentView === "table";
+  checklistTableEl.hidden = !isTableView;
+  checklistTableTitleEl.hidden = !isTableView;
+  checklistTableEmptyEl.hidden = !(isTableView && lastChecklistCount === 0);
+}
+
 function setView(view) {
   currentView = view;
   calendarView.hidden = view !== "calendar";
   recordTable.hidden = view !== "table";
   viewToggleBtn.textContent = view === "calendar" ? "📋 테이블로 보기" : "🗓 캘린더로 보기";
   emptyMsg.hidden = !(view === "table" && lastRecordCount === 0);
+  refreshChecklistTableVisibility();
 }
 
 viewToggleBtn.addEventListener("click", () => {

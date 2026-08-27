@@ -131,6 +131,10 @@ const checklistRangePicker = document.getElementById("checklist-range-picker");
 const checklistStartDateField = document.getElementById("checklist-start-date");
 const checklistEndDateField = document.getElementById("checklist-end-date");
 const checklistError = document.getElementById("checklist-error");
+const checklistTableTitle = document.getElementById("checklist-table-title");
+const checklistTableTbody = document.getElementById("checklist-table-tbody");
+const checklistTableEmpty = document.getElementById("checklist-table-empty");
+let lastChecklistCount = 0;
 
 function formatRepeatBadge(repeat) {
   if (repeat.type === "once") return "오늘만";
@@ -204,6 +208,59 @@ function renderChecklist() {
 
     li.append(checkbox, label, repeatBadge, deleteBtn);
     checklistList.appendChild(li);
+  }
+
+  renderChecklistTable();
+}
+
+// 테이블(목록) 보기에서는 오늘 해당 여부와 상관없이 등록된 체크리스트 전체를 보여준다 —
+// 캘린더는 날짜별로만 보이므로, 반복 규칙 자체를 관리하려면 전체 목록이 필요하다.
+function renderChecklistTable() {
+  const today = todayDateString();
+  const items = ChecklistItems.getAll();
+  lastChecklistCount = items.length;
+
+  checklistTableTbody.innerHTML = "";
+
+  for (const item of items) {
+    const tr = document.createElement("tr");
+
+    const titleTd = document.createElement("td");
+    titleTd.textContent = item.title;
+
+    const repeatTd = document.createElement("td");
+    repeatTd.textContent = formatRepeatBadge(item.repeat);
+
+    const rangeTd = document.createElement("td");
+    const rangeText = formatRangeSuffix(item.range).trim();
+    rangeTd.textContent = rangeText ? rangeText.slice(1, -1) : "-";
+
+    const doneTd = document.createElement("td");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = item.completedDates.includes(today);
+    checkbox.disabled = !isChecklistDue(item, today);
+    checkbox.title = checkbox.disabled ? "오늘은 해당하지 않는 항목입니다." : "";
+    checkbox.addEventListener("change", () => {
+      ChecklistItems.toggle(item.id, today);
+      renderChecklist();
+      render();
+    });
+    doneTd.appendChild(checkbox);
+
+    const actionTd = document.createElement("td");
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.textContent = "삭제";
+    deleteBtn.addEventListener("click", () => {
+      ChecklistItems.remove(item.id);
+      renderChecklist();
+      render();
+    });
+    actionTd.appendChild(deleteBtn);
+
+    tr.append(titleTd, repeatTd, rangeTd, doneTd, actionTd);
+    checklistTableTbody.appendChild(tr);
   }
 }
 
