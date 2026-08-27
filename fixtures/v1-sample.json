@@ -1,0 +1,32 @@
+[
+  {
+    "id": "v1-sample-0001",
+    "date": "2026-08-10",
+    "timezone": "Asia/Seoul",
+    "item": "운동",
+    "value": 40,
+    "unit": "분",
+    "memo": "v1 형식 샘플(태그 필드 없음)",
+    "schemaVersion": 1
+  },
+  {
+    "id": "v1-sample-0002",
+    "date": "2026-08-11",
+    "timezone": "Asia/Seoul",
+    "item": "독서",
+    "value": 15,
+    "unit": "페이지",
+    "memo": "",
+    "schemaVersion": 1
+  },
+  {
+    "id": "v1-sample-0003",
+    "date": "2026-08-12",
+    "timezone": "Asia/Seoul",
+    "item": "게임 기록",
+    "value": 3,
+    "unit": "회",
+    "memo": "v1 -> v2 변환 테스트용",
+    "schemaVersion": 1
+  }
+]

@@ -3,18 +3,50 @@
 
 const TIMEZONE = "Asia/Seoul";
 const STORAGE_KEY = "plandoc_records_v1";
-const CURRENT_SCHEMA_VERSION = 1;
+const CURRENT_SCHEMA_VERSION = 2;
+
+// v1(schemaVersion 없음 또는 1): id·date·timezone·item·value·unit·memo
+// v2(schemaVersion 2): v1 필드 + tags(문자열 배열). 이미 v2면 그대로 반환(멱등).
+function migrateRecordToV2(record) {
+  if (record.schemaVersion === 2) return record;
+  return {
+    ...record,
+    tags: Array.isArray(record.tags) ? record.tags : [],
+    schemaVersion: 2,
+  };
+}
+
+function migrateAllToV2(records) {
+  let migratedCount = 0;
+  const next = records.map((r) => {
+    const upgraded = migrateRecordToV2(r);
+    if (upgraded !== r) migratedCount++;
+    return upgraded;
+  });
+  return { records: next, migratedCount };
+}
 
 const Storage = {
+  lastMigratedCount: 0,
+
   load() {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    try {
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
+    if (!raw) {
+      this.lastMigratedCount = 0;
       return [];
     }
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) parsed = [];
+    } catch {
+      parsed = [];
+    }
+
+    const { records, migratedCount } = migrateAllToV2(parsed);
+    this.lastMigratedCount = migratedCount;
+    if (migratedCount > 0) this.save(records);
+    return records;
   },
 
   save(records) {
@@ -39,12 +71,23 @@ function validateRecordInput({ date, item, value, unit }) {
   return null;
 }
 
+function normalizeTags(tags) {
+  if (Array.isArray(tags)) return tags.map((t) => String(t).trim()).filter(Boolean);
+  if (typeof tags === "string") {
+    return tags
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
 const Records = {
   getAll() {
     return Storage.load();
   },
 
-  create({ date, item, value, unit, memo }) {
+  create({ date, item, value, unit, memo, tags }) {
     const error = validateRecordInput({ date, item, value, unit });
     if (error) throw new Error(error);
 
@@ -56,6 +99,7 @@ const Records = {
       value: Number(value),
       unit: String(unit).trim(),
       memo: memo ? String(memo).trim() : "",
+      tags: normalizeTags(tags),
       schemaVersion: CURRENT_SCHEMA_VERSION,
     };
 
@@ -75,6 +119,7 @@ const Records = {
     if (error) throw new Error(error);
 
     merged.value = Number(merged.value);
+    merged.tags = normalizeTags(patch.tags !== undefined ? patch.tags : merged.tags);
     records[index] = merged;
     Storage.save(records);
     return merged;
@@ -138,7 +183,7 @@ const ImportExport = {
       }
     }
 
-    return data.map((r) => ({
+    const normalized = data.map((r) => ({
       id: r.id,
       date: r.date,
       timezone: r.timezone || TIMEZONE,
@@ -146,7 +191,12 @@ const ImportExport = {
       value: Number(r.value),
       unit: String(r.unit).trim(),
       memo: r.memo ? String(r.memo).trim() : "",
-      schemaVersion: r.schemaVersion || CURRENT_SCHEMA_VERSION,
+      tags: normalizeTags(r.tags),
+      schemaVersion: r.schemaVersion || 1,
     }));
+
+    // v1 형식으로 가져온 파일은 이 시점에 v2로 자동 변환된다(이미 v2면 그대로 유지).
+    const { records } = migrateAllToV2(normalized);
+    return records;
   },
 };

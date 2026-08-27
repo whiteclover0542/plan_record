@@ -14,6 +14,19 @@
 
 <main>
   <section class="panel">
+    <h2>기록 목록</h2>
+    <table id="record-table">
+      <thead>
+        <tr>
+          <th>날짜</th><th>항목</th><th>값</th><th>단위</th><th>태그</th><th>메모</th><th>작업</th>
+        </tr>
+      </thead>
+      <tbody id="record-tbody"></tbody>
+    </table>
+    <p id="empty-msg" hidden>기록이 없습니다.</p>
+  </section>
+
+  <section class="panel">
     <h2 id="form-title">기록 추가</h2>
     <form id="record-form">
       <input type="hidden" id="record-id" value="" />
@@ -21,6 +34,7 @@
       <label>항목 <input type="text" id="field-item" placeholder="예: 운동, 독서, 게임" /></label>
       <label>값 <input type="number" id="field-value" step="any" /></label>
       <label>단위 <input type="text" id="field-unit" placeholder="예: 분, 회, kg" /></label>
+      <label>태그 <input type="text" id="field-tags" placeholder="쉼표로 구분, 선택 입력 (예: 실내, 아침)" /></label>
       <label>메모 <input type="text" id="field-memo" placeholder="선택 입력" /></label>
       <div class="form-actions">
         <button type="submit" id="submit-btn">추가</button>
@@ -29,19 +43,6 @@
       <p class="error" id="form-error" role="alert"></p>
     </form>
     <button type="button" id="seed-btn">합성 기록 3건 채우기 (테스트용)</button>
-  </section>
-
-  <section class="panel">
-    <h2>기록 목록</h2>
-    <table id="record-table">
-      <thead>
-        <tr>
-          <th>날짜</th><th>항목</th><th>값</th><th>단위</th><th>메모</th><th>작업</th>
-        </tr>
-      </thead>
-      <tbody id="record-tbody"></tbody>
-    </table>
-    <p id="empty-msg" hidden>기록이 없습니다.</p>
   </section>
 
   <section class="panel">
@@ -60,6 +61,7 @@
   <section class="panel">
     <h2>요약</h2>
     <p id="summary-total">전체 기록: 0건</p>
+    <p id="schema-status" class="hint"></p>
   </section>
 </main>
 

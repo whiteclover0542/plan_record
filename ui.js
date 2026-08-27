@@ -6,6 +6,7 @@ const dateField = document.getElementById("field-date");
 const itemField = document.getElementById("field-item");
 const valueField = document.getElementById("field-value");
 const unitField = document.getElementById("field-unit");
+const tagsField = document.getElementById("field-tags");
 const memoField = document.getElementById("field-memo");
 const errorEl = document.getElementById("form-error");
 const tbody = document.getElementById("record-tbody");
@@ -19,6 +20,7 @@ const exportBtn = document.getElementById("export-btn");
 const importInput = document.getElementById("import-input");
 const deleteAllBtn = document.getElementById("delete-all-btn");
 const importError = document.getElementById("import-error");
+const schemaStatus = document.getElementById("schema-status");
 
 function clearError() {
   errorEl.textContent = "";
@@ -43,6 +45,7 @@ function enterEditMode(record) {
   itemField.value = record.item;
   valueField.value = record.value;
   unitField.value = record.unit;
+  tagsField.value = (record.tags || []).join(", ");
   memoField.value = record.memo || "";
   formTitle.textContent = "기록 수정";
   submitBtn.textContent = "저장";
@@ -58,7 +61,7 @@ function render() {
   for (const r of records) {
     const tr = document.createElement("tr");
 
-    const cells = [r.date, r.item, r.value, r.unit, r.memo || ""];
+    const cells = [r.date, r.item, r.value, r.unit, (r.tags || []).join(", "), r.memo || ""];
     for (const text of cells) {
       const td = document.createElement("td");
       td.textContent = text;
@@ -88,6 +91,7 @@ function render() {
   }
 
   summaryTotal.textContent = `전체 기록: ${records.length}건`;
+  schemaStatus.textContent = `데이터 형식: schemaVersion v${CURRENT_SCHEMA_VERSION} · v1 형식(태그 필드 없음)으로 저장·가져오기된 기록은 불러오는 즉시 자동으로 v${CURRENT_SCHEMA_VERSION}로 변환됩니다 (id·날짜·값·단위는 그대로 유지).`;
 }
 
 form.addEventListener("submit", (e) => {
@@ -99,6 +103,7 @@ form.addEventListener("submit", (e) => {
     item: itemField.value,
     value: valueField.value,
     unit: unitField.value,
+    tags: tagsField.value,
     memo: memoField.value,
   };
 
@@ -119,9 +124,9 @@ cancelEditBtn.addEventListener("click", resetForm);
 
 seedBtn.addEventListener("click", () => {
   const samples = [
-    { date: "2026-08-24", item: "운동", value: 30, unit: "분", memo: "홈트레이닝" },
-    { date: "2026-08-25", item: "독서", value: 20, unit: "페이지", memo: "" },
-    { date: "2026-08-26", item: "게임 기록", value: 5, unit: "회", memo: "연습 매치" },
+    { date: "2026-08-24", item: "운동", value: 30, unit: "분", tags: "실내, 아침", memo: "홈트레이닝" },
+    { date: "2026-08-25", item: "독서", value: 20, unit: "페이지", tags: "", memo: "" },
+    { date: "2026-08-26", item: "게임 기록", value: 5, unit: "회", tags: "저녁", memo: "연습 매치" },
   ];
   for (const s of samples) Records.create(s);
   render();
