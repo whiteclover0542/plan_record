@@ -28,10 +28,12 @@ const viewToggleBtn = document.getElementById("view-toggle-btn");
 const calendarView = document.getElementById("calendar-view");
 const recordTable = document.getElementById("record-table");
 const calendarGrid = document.getElementById("calendar-grid");
+const calendarWeekdaysEl = document.getElementById("calendar-weekdays");
 const calMonthLabel = document.getElementById("cal-month-label");
 const calPrevBtn = document.getElementById("cal-prev-btn");
 const calNextBtn = document.getElementById("cal-next-btn");
 const calTodayBtn = document.getElementById("cal-today-btn");
+const calWeekStartSelect = document.getElementById("cal-week-start-select");
 const detailOverlay = document.getElementById("record-detail-overlay");
 const detailCloseBtn = document.getElementById("detail-close-btn");
 const detailEditBtn = document.getElementById("detail-edit-btn");
@@ -49,6 +51,10 @@ let lastRecordCount = 0;
 const todayInit = new Date();
 let calYear = todayInit.getFullYear();
 let calMonth = todayInit.getMonth(); // 0-indexed
+
+const CAL_WEEK_START_KEY = "plandoc_cal_week_start";
+let calWeekStart = localStorage.getItem(CAL_WEEK_START_KEY) === "sun" ? "sun" : "mon";
+calWeekStartSelect.value = calWeekStart;
 
 function clearError() {
   errorEl.textContent = "";
@@ -170,27 +176,34 @@ function renderTable(records) {
   }
 }
 
-function pad2(n) {
-  return String(n).padStart(2, "0");
+const WEEKDAY_LABELS = {
+  mon: ["월", "화", "수", "목", "금", "토", "일"],
+  sun: ["일", "월", "화", "수", "목", "금", "토"],
+};
+
+function renderCalendarWeekdayHeader() {
+  calendarWeekdaysEl.innerHTML = "";
+  for (const label of WEEKDAY_LABELS[calWeekStart]) {
+    const span = document.createElement("span");
+    span.textContent = label;
+    calendarWeekdaysEl.appendChild(span);
+  }
 }
 
-function todayDateString() {
-  const d = new Date();
-  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
-}
-
-// 월요일 시작 기준으로 해당 월을 덮는 전체 주(week) 단위 날짜 목록을 만든다.
+// weekStart("mon" 또는 "sun") 시작 기준으로 해당 월을 덮는 전체 주(week) 단위 날짜 목록을 만든다.
 // UTC 기반으로 계산해 로컬 시간대의 자정 부근 날짜 이동 문제를 피한다.
-function buildMonthGrid(year, month) {
+function buildMonthGrid(year, month, weekStart) {
+  const startDow = weekStart === "sun" ? 0 : 1; // getUTCDay() 기준: 0=일, 1=월
+
   const firstOfMonth = new Date(Date.UTC(year, month, 1));
-  const daysSinceMonday = (firstOfMonth.getUTCDay() + 6) % 7;
+  const daysFromStart = (firstOfMonth.getUTCDay() - startDow + 7) % 7;
   const gridStart = new Date(firstOfMonth);
-  gridStart.setUTCDate(firstOfMonth.getUTCDate() - daysSinceMonday);
+  gridStart.setUTCDate(firstOfMonth.getUTCDate() - daysFromStart);
 
   const lastOfMonth = new Date(Date.UTC(year, month + 1, 0));
-  const daysUntilSunday = (7 - lastOfMonth.getUTCDay()) % 7;
+  const daysUntilEnd = (startDow + 6 - lastOfMonth.getUTCDay() + 7) % 7;
   const gridEnd = new Date(lastOfMonth);
-  gridEnd.setUTCDate(lastOfMonth.getUTCDate() + daysUntilSunday);
+  gridEnd.setUTCDate(lastOfMonth.getUTCDate() + daysUntilEnd);
 
   const days = [];
   const cur = new Date(gridStart);
@@ -212,10 +225,12 @@ function renderCalendar(records) {
   }
 
   calMonthLabel.textContent = `${calYear}년 ${calMonth + 1}월`;
+  renderCalendarWeekdayHeader();
   calendarGrid.innerHTML = "";
 
   const today = todayDateString();
-  const days = buildMonthGrid(calYear, calMonth);
+  const days = buildMonthGrid(calYear, calMonth, calWeekStart);
+  const checklistItems = ChecklistItems.getAll();
 
   for (const day of days) {
     const cell = document.createElement("div");
@@ -234,13 +249,38 @@ function renderCalendar(records) {
     for (const r of recordsByDate.get(day.dateStr) || []) {
       const item = document.createElement("div");
       item.className = "day-record-item";
-      item.textContent = `${r.item} ${r.value}${r.unit}`;
+      const hasValue = !isBlank(r.value) || !isBlank(r.unit);
+      item.textContent = hasValue ? `${r.item} · ${r.value}${r.unit}` : r.item;
       item.title = item.textContent;
 
       // 칸이 작아 목록에서는 요약만 보여주고, 클릭하면 상세 모달에서 전체 정보 + 수정·삭제를 보여준다.
       item.addEventListener("click", () => openRecordDetail(r));
 
       dayRecords.appendChild(item);
+    }
+
+    for (const c of checklistItems.filter((item) => isChecklistDue(item, day.dateStr))) {
+      const chip = document.createElement("label");
+      chip.className = "day-checklist-item";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      const done = c.completedDates.includes(day.dateStr);
+      checkbox.checked = done;
+      checkbox.addEventListener("change", () => {
+        ChecklistItems.toggle(c.id, day.dateStr);
+        render();
+        renderChecklist();
+      });
+
+      const text = document.createElement("span");
+      text.className = "day-checklist-label";
+      if (done) text.classList.add("done");
+      text.textContent = c.title;
+      text.title = c.title;
+
+      chip.append(checkbox, text);
+      dayRecords.appendChild(chip);
     }
 
     cell.appendChild(dayRecords);
@@ -282,6 +322,12 @@ calTodayBtn.addEventListener("click", () => {
   const d = new Date();
   calYear = d.getFullYear();
   calMonth = d.getMonth();
+  render();
+});
+
+calWeekStartSelect.addEventListener("change", () => {
+  calWeekStart = calWeekStartSelect.value === "sun" ? "sun" : "mon";
+  localStorage.setItem(CAL_WEEK_START_KEY, calWeekStart);
   render();
 });
 

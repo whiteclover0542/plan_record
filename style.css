@@ -12,6 +12,7 @@
   --danger: #ff6b6b;
   --today-bg: #f2f2f2;
   --today-text: #0b0b0c;
+  --checklist-accent: #b3b3b8;
 }
 
 * {
@@ -56,35 +57,167 @@ header .sub {
 
 .add-record-layout {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: flex-start;
 }
 
 .add-record-form-col {
-  flex: 0 0 420px;
+  flex: 1 1 260px;
+  min-width: 0;
+  max-width: 420px;
 }
 
 .add-record-side-box {
-  flex: 1 1 auto;
+  flex: 1 1 200px;
+  min-width: 0;
   align-self: stretch;
   min-height: 12rem;
-  border: 1px dashed var(--panel-border);
+  border: 1px solid var(--panel-border);
   border-radius: 8px;
+  padding: 1rem 1.25rem;
 }
 
-@media (max-width: 720px) {
-  .add-record-layout {
-    flex-direction: column;
-  }
+.add-record-side-box h2 {
+  font-size: 1rem;
+  margin: 0 0 0.4rem;
+}
 
-  .add-record-form-col {
-    flex-basis: auto;
-    width: 100%;
-  }
+.add-record-side-box #checklist-form {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--panel-border);
+  max-width: none;
+}
 
-  .add-record-side-box {
-    width: 100%;
-  }
+.checklist-list {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--input-bg);
+  border-radius: 4px;
+  padding: 0.35rem 0.5rem;
+}
+
+.checklist-item input[type="checkbox"] {
+  accent-color: var(--checklist-accent);
+  width: 1.05em;
+  height: 1.05em;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.checklist-item-title {
+  flex: 1 1 auto;
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checklist-item-title.done {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.checklist-item-repeat {
+  font-size: 0.7rem;
+  color: var(--checklist-accent);
+  border: 1px solid var(--checklist-accent);
+  border-radius: 999px;
+  padding: 0.05rem 0.45rem;
+  flex-shrink: 0;
+}
+
+.checklist-delete-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 0 0.2rem;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.checklist-delete-btn:hover {
+  color: var(--danger);
+  background: transparent;
+}
+
+.checklist-repeat-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.checklist-repeat-group label {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.checklist-weekday-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+}
+
+.checklist-weekday-picker label {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.checklist-monthday-picker {
+  margin-bottom: 0.6rem;
+}
+
+.checklist-monthday-picker label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.checklist-monthday-picker input {
+  width: 100%;
+  max-width: 100%;
+}
+
+.checklist-range-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.checklist-range-picker label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  flex: 1 1 120px;
+}
+
+.checklist-weekday-picker[hidden],
+.checklist-monthday-picker[hidden],
+.checklist-range-picker[hidden] {
+  display: none;
 }
 
 form label {
@@ -247,6 +380,30 @@ td button {
   color: var(--text);
 }
 
+.cal-week-start-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-left: 0.5rem;
+}
+
+.cal-week-start-label select {
+  font-family: inherit;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  background: var(--input-bg);
+  color: var(--text);
+}
+
+.cal-week-start-label select:focus {
+  outline: none;
+  border-color: var(--text-muted);
+}
+
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -332,6 +489,38 @@ td button {
 
 .day-record-item:hover {
   background: var(--hover);
+}
+
+.day-checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(179, 179, 184, 0.12);
+  border: 1px solid var(--checklist-accent);
+  border-radius: 3px;
+  padding: 0.1rem 0.3rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.day-checklist-item input[type="checkbox"] {
+  accent-color: var(--checklist-accent);
+  width: 0.9em;
+  height: 0.9em;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.day-checklist-label {
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.day-checklist-label.done {
+  color: var(--text-muted);
+  text-decoration: line-through;
 }
 
 .modal-overlay {

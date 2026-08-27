@@ -5,6 +5,15 @@ const TIMEZONE = "Asia/Seoul";
 const STORAGE_KEY = "plandoc_records_v1";
 const CURRENT_SCHEMA_VERSION = 2;
 
+function pad2(n) {
+  return String(n).padStart(2, "0");
+}
+
+function todayDateString() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+}
+
 // v1(schemaVersion 없음 또는 1): id·date·timezone·item·value·unit·memo
 // v2(schemaVersion 2): v1 필드 + tags(문자열 배열). 이미 v2면 그대로 반환(멱등).
 function migrateRecordToV2(record) {
@@ -173,8 +182,8 @@ const Records = {
       date,
       timezone: TIMEZONE,
       item: String(item).trim(),
-      value: Number(value),
-      unit: String(unit).trim(),
+      value: isBlank(value) ? "" : Number(value),
+      unit: isBlank(unit) ? "" : String(unit).trim(),
       memo: memo ? String(memo).trim() : "",
       tags: normalizeTags(tags),
       schemaVersion: CURRENT_SCHEMA_VERSION,
@@ -195,7 +204,8 @@ const Records = {
     const error = validateRecordInput(merged);
     if (error) throw new Error(error);
 
-    merged.value = Number(merged.value);
+    merged.value = isBlank(merged.value) ? "" : Number(merged.value);
+    merged.unit = isBlank(merged.unit) ? "" : String(merged.unit).trim();
     merged.tags = normalizeTags(patch.tags !== undefined ? patch.tags : merged.tags);
     records[index] = merged;
     Storage.save(records);
@@ -265,8 +275,8 @@ const ImportExport = {
       date: r.date,
       timezone: r.timezone || TIMEZONE,
       item: String(r.item).trim(),
-      value: Number(r.value),
-      unit: String(r.unit).trim(),
+      value: isBlank(r.value) ? "" : Number(r.value),
+      unit: isBlank(r.unit) ? "" : String(r.unit).trim(),
       memo: r.memo ? String(r.memo).trim() : "",
       tags: normalizeTags(r.tags),
       schemaVersion: r.schemaVersion || 1,
