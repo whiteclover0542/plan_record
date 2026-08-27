@@ -68,10 +68,10 @@ function isValidDateString(s) {
 }
 
 function validateRecordInput({ date, item, value, unit }) {
-  if (isBlank(date) || isBlank(item) || isBlank(value) || isBlank(unit)) {
-    return "날짜, 항목, 값, 단위는 비워둘 수 없습니다.";
+  if (isBlank(date) || isBlank(item)) {
+    return "날짜, 항목은 비워둘 수 없습니다.";
   }
-  if (Number.isNaN(Number(value))) {
+  if (!isBlank(value) && Number.isNaN(Number(value))) {
     return "값은 숫자여야 합니다.";
   }
   if (!isValidDateString(date)) {
@@ -115,7 +115,7 @@ const WeeklySummary = {
       }
       if (!isBlank(r.id)) seenIds.add(r.id);
 
-      if (isBlank(r.date) || isBlank(r.item) || isBlank(r.value) || isBlank(r.unit)) {
+      if (isBlank(r.date) || isBlank(r.item)) {
         skipped.push({ id: r.id, reason: "필수값 누락" });
         continue;
       }
@@ -123,7 +123,7 @@ const WeeklySummary = {
         skipped.push({ id: r.id, reason: "잘못된 날짜" });
         continue;
       }
-      if (Number.isNaN(Number(r.value))) {
+      if (!isBlank(r.value) && Number.isNaN(Number(r.value))) {
         skipped.push({ id: r.id, reason: "숫자가 아닌 값" });
         continue;
       }
@@ -140,7 +140,7 @@ const WeeklySummary = {
       }
       const bucket = weekMap.get(key);
       bucket.count += 1;
-      bucket.sumByItem[r.item] = (bucket.sumByItem[r.item] || 0) + Number(r.value);
+      bucket.sumByItem[r.item] = (bucket.sumByItem[r.item] || 0) + (isBlank(r.value) ? 0 : Number(r.value));
     }
 
     const weeks = Array.from(weekMap.values()).sort((a, b) => a.weekStart.localeCompare(b.weekStart));

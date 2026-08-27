@@ -32,7 +32,18 @@ const calMonthLabel = document.getElementById("cal-month-label");
 const calPrevBtn = document.getElementById("cal-prev-btn");
 const calNextBtn = document.getElementById("cal-next-btn");
 const calTodayBtn = document.getElementById("cal-today-btn");
+const detailOverlay = document.getElementById("record-detail-overlay");
+const detailCloseBtn = document.getElementById("detail-close-btn");
+const detailEditBtn = document.getElementById("detail-edit-btn");
+const detailDeleteBtn = document.getElementById("detail-delete-btn");
+const detailDate = document.getElementById("detail-date");
+const detailItem = document.getElementById("detail-item");
+const detailValue = document.getElementById("detail-value");
+const detailUnit = document.getElementById("detail-unit");
+const detailTags = document.getElementById("detail-tags");
+const detailMemo = document.getElementById("detail-memo");
 
+let currentDetailRecord = null;
 let currentView = "calendar";
 let lastRecordCount = 0;
 const todayInit = new Date();
@@ -50,6 +61,7 @@ function showError(message) {
 function resetForm() {
   form.reset();
   idField.value = "";
+  dateField.value = todayDateString();
   formTitle.textContent = "기록 추가";
   submitBtn.textContent = "추가";
   cancelEditBtn.hidden = true;
@@ -69,6 +81,42 @@ function enterEditMode(record) {
   cancelEditBtn.hidden = false;
   clearError();
 }
+
+function openRecordDetail(record) {
+  currentDetailRecord = record;
+  detailDate.textContent = record.date || "";
+  detailItem.textContent = record.item || "";
+  detailValue.textContent = record.value ?? "";
+  detailUnit.textContent = record.unit || "";
+  detailTags.textContent = (record.tags || []).join(", ") || "-";
+  detailMemo.textContent = record.memo || "-";
+  detailOverlay.hidden = false;
+}
+
+function closeRecordDetail() {
+  detailOverlay.hidden = true;
+  currentDetailRecord = null;
+}
+
+detailCloseBtn.addEventListener("click", closeRecordDetail);
+
+detailOverlay.addEventListener("click", (e) => {
+  if (e.target === detailOverlay) closeRecordDetail();
+});
+
+detailEditBtn.addEventListener("click", () => {
+  if (!currentDetailRecord) return;
+  enterEditMode(currentDetailRecord);
+  closeRecordDetail();
+  form.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+detailDeleteBtn.addEventListener("click", () => {
+  if (!currentDetailRecord) return;
+  Records.remove(currentDetailRecord.id);
+  closeRecordDetail();
+  render();
+});
 
 function render() {
   const records = Records.getAll()
@@ -186,43 +234,11 @@ function renderCalendar(records) {
     for (const r of recordsByDate.get(day.dateStr) || []) {
       const item = document.createElement("div");
       item.className = "day-record-item";
+      item.textContent = `${r.item} ${r.value}${r.unit}`;
+      item.title = item.textContent;
 
-      const label = document.createElement("span");
-      label.className = "day-record-label";
-      label.textContent = `${r.item} ${r.value}${r.unit}`;
-      label.title = label.textContent;
-      item.appendChild(label);
-
-      const actions = document.createElement("span");
-      actions.className = "day-record-actions";
-
-      const editBtn = document.createElement("button");
-      editBtn.type = "button";
-      editBtn.textContent = "수정";
-      editBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        enterEditMode(r);
-      });
-
-      const deleteBtn = document.createElement("button");
-      deleteBtn.type = "button";
-      deleteBtn.textContent = "삭제";
-      deleteBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        Records.remove(r.id);
-        render();
-      });
-
-      actions.appendChild(editBtn);
-      actions.appendChild(deleteBtn);
-      item.appendChild(actions);
-
-      // 기록을 클릭해야만 수정·삭제 버튼이 보인다. 다른 항목을 열면 이전에 열려있던 항목은 닫는다.
-      item.addEventListener("click", () => {
-        const wasOpen = item.classList.contains("open");
-        calendarGrid.querySelectorAll(".day-record-item.open").forEach((el) => el.classList.remove("open"));
-        if (!wasOpen) item.classList.add("open");
-      });
+      // 칸이 작아 목록에서는 요약만 보여주고, 클릭하면 상세 모달에서 전체 정보 + 수정·삭제를 보여준다.
+      item.addEventListener("click", () => openRecordDetail(r));
 
       dayRecords.appendChild(item);
     }
@@ -373,4 +389,5 @@ deleteAllBtn.addEventListener("click", () => {
 });
 
 setView(currentView);
+dateField.value = todayDateString();
 render();
