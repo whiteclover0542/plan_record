@@ -1,0 +1,126 @@
+// 화면 렌더링 + 이벤트 바인딩
+
+const form = document.getElementById("record-form");
+const idField = document.getElementById("record-id");
+const dateField = document.getElementById("field-date");
+const itemField = document.getElementById("field-item");
+const valueField = document.getElementById("field-value");
+const unitField = document.getElementById("field-unit");
+const memoField = document.getElementById("field-memo");
+const errorEl = document.getElementById("form-error");
+const tbody = document.getElementById("record-tbody");
+const emptyMsg = document.getElementById("empty-msg");
+const summaryTotal = document.getElementById("summary-total");
+const formTitle = document.getElementById("form-title");
+const submitBtn = document.getElementById("submit-btn");
+const cancelEditBtn = document.getElementById("cancel-edit-btn");
+const seedBtn = document.getElementById("seed-btn");
+
+function clearError() {
+  errorEl.textContent = "";
+}
+
+function showError(message) {
+  errorEl.textContent = message;
+}
+
+function resetForm() {
+  form.reset();
+  idField.value = "";
+  formTitle.textContent = "기록 추가";
+  submitBtn.textContent = "추가";
+  cancelEditBtn.hidden = true;
+  clearError();
+}
+
+function enterEditMode(record) {
+  idField.value = record.id;
+  dateField.value = record.date;
+  itemField.value = record.item;
+  valueField.value = record.value;
+  unitField.value = record.unit;
+  memoField.value = record.memo || "";
+  formTitle.textContent = "기록 수정";
+  submitBtn.textContent = "저장";
+  cancelEditBtn.hidden = false;
+  clearError();
+}
+
+function render() {
+  const records = Records.getAll().slice().sort((a, b) => a.date.localeCompare(b.date));
+  tbody.innerHTML = "";
+  emptyMsg.hidden = records.length > 0;
+
+  for (const r of records) {
+    const tr = document.createElement("tr");
+
+    const cells = [r.date, r.item, r.value, r.unit, r.memo || ""];
+    for (const text of cells) {
+      const td = document.createElement("td");
+      td.textContent = text;
+      tr.appendChild(td);
+    }
+
+    const actionTd = document.createElement("td");
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "수정";
+    editBtn.type = "button";
+    editBtn.addEventListener("click", () => enterEditMode(r));
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "삭제";
+    deleteBtn.type = "button";
+    deleteBtn.addEventListener("click", () => {
+      Records.remove(r.id);
+      render();
+    });
+
+    actionTd.appendChild(editBtn);
+    actionTd.appendChild(deleteBtn);
+    tr.appendChild(actionTd);
+
+    tbody.appendChild(tr);
+  }
+
+  summaryTotal.textContent = `전체 기록: ${records.length}건`;
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  clearError();
+
+  const payload = {
+    date: dateField.value,
+    item: itemField.value,
+    value: valueField.value,
+    unit: unitField.value,
+    memo: memoField.value,
+  };
+
+  try {
+    if (idField.value) {
+      Records.update(idField.value, payload);
+    } else {
+      Records.create(payload);
+    }
+    resetForm();
+    render();
+  } catch (err) {
+    showError(err.message);
+  }
+});
+
+cancelEditBtn.addEventListener("click", resetForm);
+
+seedBtn.addEventListener("click", () => {
+  const samples = [
+    { date: "2026-08-24", item: "운동", value: 30, unit: "분", memo: "홈트레이닝" },
+    { date: "2026-08-25", item: "독서", value: 20, unit: "페이지", memo: "" },
+    { date: "2026-08-26", item: "게임 기록", value: 5, unit: "회", memo: "연습 매치" },
+  ];
+  for (const s of samples) Records.create(s);
+  render();
+});
+
+render();
