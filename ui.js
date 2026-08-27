@@ -199,12 +199,16 @@ function renderCalendar(records) {
       const editBtn = document.createElement("button");
       editBtn.type = "button";
       editBtn.textContent = "수정";
-      editBtn.addEventListener("click", () => enterEditMode(r));
+      editBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        enterEditMode(r);
+      });
 
       const deleteBtn = document.createElement("button");
       deleteBtn.type = "button";
       deleteBtn.textContent = "삭제";
-      deleteBtn.addEventListener("click", () => {
+      deleteBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
         Records.remove(r.id);
         render();
       });
@@ -212,6 +216,13 @@ function renderCalendar(records) {
       actions.appendChild(editBtn);
       actions.appendChild(deleteBtn);
       item.appendChild(actions);
+
+      // 기록을 클릭해야만 수정·삭제 버튼이 보인다. 다른 항목을 열면 이전에 열려있던 항목은 닫는다.
+      item.addEventListener("click", () => {
+        const wasOpen = item.classList.contains("open");
+        calendarGrid.querySelectorAll(".day-record-item.open").forEach((el) => el.classList.remove("open"));
+        if (!wasOpen) item.classList.add("open");
+      });
 
       dayRecords.appendChild(item);
     }

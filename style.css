@@ -19,7 +19,7 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Cafe24 Ssurround", system-ui, -apple-system, "Segoe UI", sans-serif;
   max-width: 720px;
   margin: 0 auto;
   padding: 1.5rem;
@@ -225,12 +225,13 @@ td button {
 
 .calendar-day {
   background: var(--panel);
-  min-height: 4.5rem;
+  height: 5.5rem;
   padding: 0.25rem;
   font-size: 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  overflow: hidden;
 }
 
 .calendar-day.out-month {
@@ -263,8 +264,9 @@ td button {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
-  max-height: 4.5rem;
 }
 
 .day-record-item {
@@ -276,12 +278,23 @@ td button {
   border-radius: 3px;
   padding: 0.1rem 0.25rem;
   color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .day-record-item .day-record-label {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.day-record-actions {
+  display: none;
+  flex-shrink: 0;
+}
+
+.day-record-item.open .day-record-actions {
+  display: inline-flex;
 }
 
 .day-record-item .day-record-actions button {
