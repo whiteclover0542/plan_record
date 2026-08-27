@@ -1,3 +1,19 @@
+:root {
+  --bg: #0b0b0c;
+  --panel: #161718;
+  --panel-border: #2a2b2d;
+  --text: #f2f2f2;
+  --text-muted: #9a9a9d;
+  --border: #3a3b3d;
+  --input-bg: #1e1f21;
+  --hover: #232426;
+  --accent-bg: #f2f2f2;
+  --accent-text: #0b0b0c;
+  --danger: #ff6b6b;
+  --today-bg: #f2f2f2;
+  --today-text: #0b0b0c;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -7,18 +23,27 @@ body {
   max-width: 720px;
   margin: 0 auto;
   padding: 1.5rem;
-  color: #1a1a1a;
-  background: #fafafa;
+  color: var(--text);
+  background: var(--bg);
+}
+
+h1, h2, h3 {
+  color: var(--text);
 }
 
 header .sub {
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 
+.hint {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
 .panel {
-  background: #fff;
-  border: 1px solid #e0e0e0;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
   border-radius: 8px;
   padding: 1rem 1.25rem;
   margin-bottom: 1.25rem;
@@ -30,13 +55,25 @@ form label {
   font-size: 0.85rem;
   margin-bottom: 0.6rem;
   gap: 0.25rem;
+  color: var(--text-muted);
 }
 
 form input {
   padding: 0.4rem 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   border-radius: 4px;
   font-size: 0.9rem;
+  background: var(--input-bg);
+  color: var(--text);
+}
+
+form input::placeholder {
+  color: #6b6b6e;
+}
+
+form input:focus {
+  outline: none;
+  border-color: var(--text-muted);
 }
 
 .form-actions {
@@ -47,25 +84,33 @@ form input {
 
 button {
   padding: 0.4rem 0.9rem;
-  border: 1px solid #999;
+  border: 1px solid var(--border);
   border-radius: 4px;
-  background: #fff;
+  background: var(--input-bg);
+  color: var(--text);
   cursor: pointer;
   font-size: 0.85rem;
 }
 
 button:hover {
-  background: #f0f0f0;
+  background: var(--hover);
+  border-color: var(--text-muted);
 }
 
 #submit-btn {
-  background: #1a1a1a;
-  color: #fff;
-  border-color: #1a1a1a;
+  background: var(--accent-bg);
+  color: var(--accent-text);
+  border-color: var(--accent-bg);
+  font-weight: 600;
+}
+
+#submit-btn:hover {
+  background: #d8d8d8;
+  border-color: #d8d8d8;
 }
 
 .error {
-  color: #c0392b;
+  color: var(--danger);
   font-size: 0.85rem;
   min-height: 1.2em;
 }
@@ -76,10 +121,15 @@ table {
   font-size: 0.85rem;
 }
 
+th {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
 th, td {
   text-align: left;
   padding: 0.4rem 0.5rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--panel-border);
 }
 
 td button {
@@ -91,7 +141,9 @@ td button {
 #seed-btn {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-muted);
+  background: transparent;
+  border-color: var(--panel-border);
 }
 
 .file-label {
@@ -99,22 +151,141 @@ td button {
   align-items: center;
   gap: 0.4rem;
   padding: 0.4rem 0.9rem;
-  border: 1px solid #999;
+  border: 1px solid var(--border);
   border-radius: 4px;
   font-size: 0.85rem;
   cursor: pointer;
+  background: var(--input-bg);
+  color: var(--text);
 }
 
 .file-label:hover {
-  background: #f0f0f0;
+  background: var(--hover);
 }
 
 .file-label input[type="file"] {
   font-size: 0.75rem;
   max-width: 140px;
+  color: var(--text-muted);
 }
 
 #delete-all-btn {
-  border-color: #c0392b;
-  color: #c0392b;
+  border-color: var(--danger);
+  color: var(--danger);
+  background: transparent;
+}
+
+#delete-all-btn:hover {
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.list-header h2 {
+  margin: 0;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+#cal-month-label {
+  font-weight: 600;
+  min-width: 6em;
+  text-align: center;
+  color: var(--text);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--panel-border);
+  border: 1px solid var(--panel-border);
+}
+
+.calendar-day {
+  background: var(--panel);
+  min-height: 4.5rem;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.calendar-day.out-month {
+  background: #1d1e20;
+  color: #6f7075;
+}
+
+.calendar-day.out-month .day-number {
+  color: #4a4b4f;
+}
+
+.calendar-day.today .day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4em;
+  height: 1.4em;
+  border-radius: 50%;
+  background: var(--today-bg);
+  color: var(--today-text);
+}
+
+.day-number {
+  font-size: 0.8rem;
+  margin-bottom: 0.15rem;
+  color: var(--text);
+}
+
+.day-records {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  overflow-y: auto;
+  max-height: 4.5rem;
+}
+
+.day-record-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  background: var(--input-bg);
+  border-radius: 3px;
+  padding: 0.1rem 0.25rem;
+  color: var(--text);
+}
+
+.day-record-item .day-record-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.day-record-item .day-record-actions button {
+  padding: 0 0.25rem;
+  font-size: 0.65rem;
+  margin-left: 0.15rem;
 }

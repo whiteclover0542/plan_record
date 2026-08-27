@@ -24,6 +24,20 @@ const schemaStatus = document.getElementById("schema-status");
 const weeklyTbody = document.getElementById("weekly-tbody");
 const weeklyEmpty = document.getElementById("weekly-empty");
 const weeklySkipped = document.getElementById("weekly-skipped");
+const viewToggleBtn = document.getElementById("view-toggle-btn");
+const calendarView = document.getElementById("calendar-view");
+const recordTable = document.getElementById("record-table");
+const calendarGrid = document.getElementById("calendar-grid");
+const calMonthLabel = document.getElementById("cal-month-label");
+const calPrevBtn = document.getElementById("cal-prev-btn");
+const calNextBtn = document.getElementById("cal-next-btn");
+const calTodayBtn = document.getElementById("cal-today-btn");
+
+let currentView = "calendar";
+let lastRecordCount = 0;
+const todayInit = new Date();
+let calYear = todayInit.getFullYear();
+let calMonth = todayInit.getMonth(); // 0-indexed
 
 function clearError() {
   errorEl.textContent = "";
@@ -60,8 +74,20 @@ function render() {
   const records = Records.getAll()
     .slice()
     .sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")));
+
+  lastRecordCount = records.length;
+  renderTable(records);
+  renderCalendar(records);
+
+  summaryTotal.textContent = `전체 기록: ${records.length}건`;
+  schemaStatus.textContent = `데이터 형식: schemaVersion v${CURRENT_SCHEMA_VERSION} · v1 형식(태그 필드 없음)으로 저장·가져오기된 기록은 불러오는 즉시 자동으로 v${CURRENT_SCHEMA_VERSION}로 변환됩니다 (id·날짜·값·단위는 그대로 유지).`;
+
+  renderWeeklySummary(records);
+}
+
+function renderTable(records) {
   tbody.innerHTML = "";
-  emptyMsg.hidden = records.length > 0;
+  emptyMsg.hidden = !(currentView === "table" && records.length === 0);
 
   for (const r of records) {
     const tr = document.createElement("tr");
@@ -94,12 +120,143 @@ function render() {
 
     tbody.appendChild(tr);
   }
-
-  summaryTotal.textContent = `전체 기록: ${records.length}건`;
-  schemaStatus.textContent = `데이터 형식: schemaVersion v${CURRENT_SCHEMA_VERSION} · v1 형식(태그 필드 없음)으로 저장·가져오기된 기록은 불러오는 즉시 자동으로 v${CURRENT_SCHEMA_VERSION}로 변환됩니다 (id·날짜·값·단위는 그대로 유지).`;
-
-  renderWeeklySummary(records);
 }
+
+function pad2(n) {
+  return String(n).padStart(2, "0");
+}
+
+function todayDateString() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+}
+
+// 월요일 시작 기준으로 해당 월을 덮는 전체 주(week) 단위 날짜 목록을 만든다.
+// UTC 기반으로 계산해 로컬 시간대의 자정 부근 날짜 이동 문제를 피한다.
+function buildMonthGrid(year, month) {
+  const firstOfMonth = new Date(Date.UTC(year, month, 1));
+  const daysSinceMonday = (firstOfMonth.getUTCDay() + 6) % 7;
+  const gridStart = new Date(firstOfMonth);
+  gridStart.setUTCDate(firstOfMonth.getUTCDate() - daysSinceMonday);
+
+  const lastOfMonth = new Date(Date.UTC(year, month + 1, 0));
+  const daysUntilSunday = (7 - lastOfMonth.getUTCDay()) % 7;
+  const gridEnd = new Date(lastOfMonth);
+  gridEnd.setUTCDate(lastOfMonth.getUTCDate() + daysUntilSunday);
+
+  const days = [];
+  const cur = new Date(gridStart);
+  while (cur <= gridEnd) {
+    days.push({
+      dateStr: cur.toISOString().slice(0, 10),
+      inMonth: cur.getUTCMonth() === month,
+    });
+    cur.setUTCDate(cur.getUTCDate() + 1);
+  }
+  return days;
+}
+
+function renderCalendar(records) {
+  const recordsByDate = new Map();
+  for (const r of records) {
+    if (!recordsByDate.has(r.date)) recordsByDate.set(r.date, []);
+    recordsByDate.get(r.date).push(r);
+  }
+
+  calMonthLabel.textContent = `${calYear}년 ${calMonth + 1}월`;
+  calendarGrid.innerHTML = "";
+
+  const today = todayDateString();
+  const days = buildMonthGrid(calYear, calMonth);
+
+  for (const day of days) {
+    const cell = document.createElement("div");
+    cell.className = "calendar-day";
+    if (!day.inMonth) cell.classList.add("out-month");
+    if (day.dateStr === today) cell.classList.add("today");
+
+    const dayNumber = document.createElement("span");
+    dayNumber.className = "day-number";
+    dayNumber.textContent = String(Number(day.dateStr.slice(8, 10)));
+    cell.appendChild(dayNumber);
+
+    const dayRecords = document.createElement("div");
+    dayRecords.className = "day-records";
+
+    for (const r of recordsByDate.get(day.dateStr) || []) {
+      const item = document.createElement("div");
+      item.className = "day-record-item";
+
+      const label = document.createElement("span");
+      label.className = "day-record-label";
+      label.textContent = `${r.item} ${r.value}${r.unit}`;
+      label.title = label.textContent;
+      item.appendChild(label);
+
+      const actions = document.createElement("span");
+      actions.className = "day-record-actions";
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.textContent = "수정";
+      editBtn.addEventListener("click", () => enterEditMode(r));
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.textContent = "삭제";
+      deleteBtn.addEventListener("click", () => {
+        Records.remove(r.id);
+        render();
+      });
+
+      actions.appendChild(editBtn);
+      actions.appendChild(deleteBtn);
+      item.appendChild(actions);
+
+      dayRecords.appendChild(item);
+    }
+
+    cell.appendChild(dayRecords);
+    calendarGrid.appendChild(cell);
+  }
+}
+
+function setView(view) {
+  currentView = view;
+  calendarView.hidden = view !== "calendar";
+  recordTable.hidden = view !== "table";
+  viewToggleBtn.textContent = view === "calendar" ? "📋 테이블로 보기" : "🗓 캘린더로 보기";
+  emptyMsg.hidden = !(view === "table" && lastRecordCount === 0);
+}
+
+viewToggleBtn.addEventListener("click", () => {
+  setView(currentView === "calendar" ? "table" : "calendar");
+});
+
+calPrevBtn.addEventListener("click", () => {
+  calMonth -= 1;
+  if (calMonth < 0) {
+    calMonth = 11;
+    calYear -= 1;
+  }
+  render();
+});
+
+calNextBtn.addEventListener("click", () => {
+  calMonth += 1;
+  if (calMonth > 11) {
+    calMonth = 0;
+    calYear += 1;
+  }
+  render();
+});
+
+calTodayBtn.addEventListener("click", () => {
+  const d = new Date();
+  calYear = d.getFullYear();
+  calMonth = d.getMonth();
+  render();
+});
 
 function renderWeeklySummary(records) {
   const { weeks, skipped } = WeeklySummary.compute(records);
@@ -204,4 +361,5 @@ deleteAllBtn.addEventListener("click", () => {
   render();
 });
 
+setView(currentView);
 render();

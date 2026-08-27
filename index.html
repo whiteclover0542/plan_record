@@ -3,19 +3,36 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>플랜두씨 다이어리</title>
+<title>plan_record</title>
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <header>
-  <h1>플랜두씨 다이어리</h1>
+  <h1>plan_record</h1>
   <p class="sub">기준 시간대: Asia/Seoul · 주 시작 요일: 월요일 · 화면에는 합성(가상) 데이터만 사용합니다.</p>
 </header>
 
 <main>
   <section class="panel">
-    <h2>기록 목록</h2>
-    <table id="record-table">
+    <div class="list-header">
+      <h2>기록 목록</h2>
+      <button type="button" id="view-toggle-btn">📋 테이블로 보기</button>
+    </div>
+
+    <div id="calendar-view">
+      <div class="calendar-nav">
+        <button type="button" id="cal-prev-btn" aria-label="이전 달">◀</button>
+        <span id="cal-month-label"></span>
+        <button type="button" id="cal-today-btn">오늘</button>
+        <button type="button" id="cal-next-btn" aria-label="다음 달">▶</button>
+      </div>
+      <div class="calendar-weekdays">
+        <span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span><span>일</span>
+      </div>
+      <div class="calendar-grid" id="calendar-grid"></div>
+    </div>
+
+    <table id="record-table" hidden>
       <thead>
         <tr>
           <th>날짜</th><th>항목</th><th>값</th><th>단위</th><th>태그</th><th>메모</th><th>작업</th>
