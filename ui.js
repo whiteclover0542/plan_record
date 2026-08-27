@@ -21,6 +21,9 @@ const importInput = document.getElementById("import-input");
 const deleteAllBtn = document.getElementById("delete-all-btn");
 const importError = document.getElementById("import-error");
 const schemaStatus = document.getElementById("schema-status");
+const weeklyTbody = document.getElementById("weekly-tbody");
+const weeklyEmpty = document.getElementById("weekly-empty");
+const weeklySkipped = document.getElementById("weekly-skipped");
 
 function clearError() {
   errorEl.textContent = "";
@@ -54,7 +57,9 @@ function enterEditMode(record) {
 }
 
 function render() {
-  const records = Records.getAll().slice().sort((a, b) => a.date.localeCompare(b.date));
+  const records = Records.getAll()
+    .slice()
+    .sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")));
   tbody.innerHTML = "";
   emptyMsg.hidden = records.length > 0;
 
@@ -92,6 +97,37 @@ function render() {
 
   summaryTotal.textContent = `전체 기록: ${records.length}건`;
   schemaStatus.textContent = `데이터 형식: schemaVersion v${CURRENT_SCHEMA_VERSION} · v1 형식(태그 필드 없음)으로 저장·가져오기된 기록은 불러오는 즉시 자동으로 v${CURRENT_SCHEMA_VERSION}로 변환됩니다 (id·날짜·값·단위는 그대로 유지).`;
+
+  renderWeeklySummary(records);
+}
+
+function renderWeeklySummary(records) {
+  const { weeks, skipped } = WeeklySummary.compute(records);
+  weeklyTbody.innerHTML = "";
+  weeklyEmpty.hidden = weeks.length > 0;
+
+  for (const w of weeks) {
+    const tr = document.createElement("tr");
+
+    const periodTd = document.createElement("td");
+    periodTd.textContent = `${w.weekStart} ~ ${w.weekEnd}`;
+
+    const countTd = document.createElement("td");
+    countTd.textContent = `${w.count}건`;
+
+    const itemsTd = document.createElement("td");
+    itemsTd.textContent = Object.entries(w.sumByItem)
+      .map(([item, sum]) => `${item}: ${sum}`)
+      .join(", ");
+
+    tr.append(periodTd, countTd, itemsTd);
+    weeklyTbody.appendChild(tr);
+  }
+
+  weeklySkipped.textContent =
+    skipped.length > 0
+      ? `집계에서 제외된 기록 ${skipped.length}건 (${skipped.map((s) => s.reason).join(", ")}) — 목록·요약에 섞이지 않습니다.`
+      : "";
 }
 
 form.addEventListener("submit", (e) => {

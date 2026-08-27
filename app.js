@@ -58,6 +58,15 @@ function isBlank(value) {
   return value === undefined || value === null || String(value).trim() === "";
 }
 
+// "YYYY-MM-DD" 형식이면서 실존하는 달력 날짜인지 확인한다.
+// Date.parse는 2026-02-30 같은 값을 3월로 밀어서 받아들이므로 직접 왕복 검증한다.
+function isValidDateString(s) {
+  if (typeof s !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const [y, m, d] = s.split("-").map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+}
+
 function validateRecordInput({ date, item, value, unit }) {
   if (isBlank(date) || isBlank(item) || isBlank(value) || isBlank(unit)) {
     return "날짜, 항목, 값, 단위는 비워둘 수 없습니다.";
@@ -65,11 +74,79 @@ function validateRecordInput({ date, item, value, unit }) {
   if (Number.isNaN(Number(value))) {
     return "값은 숫자여야 합니다.";
   }
-  if (Number.isNaN(Date.parse(date))) {
-    return "날짜 형식이 올바르지 않습니다. (YYYY-MM-DD)";
+  if (!isValidDateString(date)) {
+    return "날짜 형식이 올바르지 않습니다. (YYYY-MM-DD, 실존하는 날짜)";
   }
   return null;
 }
+
+// 월요일(00:00)~일요일(23:59, Asia/Seoul) 기준 주 경계를 계산한다.
+// 날짜만 저장하므로 달력일 단위로 계산하면 시간대 경계 문제가 생기지 않는다.
+function getWeekRange(dateStr) {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const day = new Date(Date.UTC(y, m - 1, d));
+  const weekday = day.getUTCDay(); // 0=일, 1=월, ... 6=토
+  const daysSinceMonday = (weekday + 6) % 7;
+  const start = new Date(day);
+  start.setUTCDate(day.getUTCDate() - daysSinceMonday);
+  const end = new Date(start);
+  end.setUTCDate(start.getUTCDate() + 6);
+
+  const fmt = (dt) => dt.toISOString().slice(0, 10);
+  return { weekStart: fmt(start), weekEnd: fmt(end) };
+}
+
+const WeeklySummary = {
+  // records: 저장소의 원본 배열(오염 가능성 있음). 유효하지 않은 항목은 집계에서 제외하고
+  // 이유와 함께 skipped 목록으로 반환한다 — 절대 예외를 던지거나 잘못된 값을 합계에 섞지 않는다.
+  compute(records) {
+    const seenIds = new Set();
+    const skipped = [];
+    const valid = [];
+
+    for (const r of records) {
+      if (!r || typeof r !== "object") {
+        skipped.push({ id: undefined, reason: "형식 오류" });
+        continue;
+      }
+      if (!isBlank(r.id) && seenIds.has(r.id)) {
+        skipped.push({ id: r.id, reason: "중복 id" });
+        continue;
+      }
+      if (!isBlank(r.id)) seenIds.add(r.id);
+
+      if (isBlank(r.date) || isBlank(r.item) || isBlank(r.value) || isBlank(r.unit)) {
+        skipped.push({ id: r.id, reason: "필수값 누락" });
+        continue;
+      }
+      if (!isValidDateString(r.date)) {
+        skipped.push({ id: r.id, reason: "잘못된 날짜" });
+        continue;
+      }
+      if (Number.isNaN(Number(r.value))) {
+        skipped.push({ id: r.id, reason: "숫자가 아닌 값" });
+        continue;
+      }
+
+      valid.push(r);
+    }
+
+    const weekMap = new Map();
+    for (const r of valid) {
+      const { weekStart, weekEnd } = getWeekRange(r.date);
+      const key = weekStart;
+      if (!weekMap.has(key)) {
+        weekMap.set(key, { weekStart, weekEnd, count: 0, sumByItem: {} });
+      }
+      const bucket = weekMap.get(key);
+      bucket.count += 1;
+      bucket.sumByItem[r.item] = (bucket.sumByItem[r.item] || 0) + Number(r.value);
+    }
+
+    const weeks = Array.from(weekMap.values()).sort((a, b) => a.weekStart.localeCompare(b.weekStart));
+    return { weeks, skipped };
+  },
+};
 
 function normalizeTags(tags) {
   if (Array.isArray(tags)) return tags.map((t) => String(t).trim()).filter(Boolean);
