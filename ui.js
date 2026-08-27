@@ -15,6 +15,10 @@ const formTitle = document.getElementById("form-title");
 const submitBtn = document.getElementById("submit-btn");
 const cancelEditBtn = document.getElementById("cancel-edit-btn");
 const seedBtn = document.getElementById("seed-btn");
+const exportBtn = document.getElementById("export-btn");
+const importInput = document.getElementById("import-input");
+const deleteAllBtn = document.getElementById("delete-all-btn");
+const importError = document.getElementById("import-error");
 
 function clearError() {
   errorEl.textContent = "";
@@ -120,6 +124,42 @@ seedBtn.addEventListener("click", () => {
     { date: "2026-08-26", item: "게임 기록", value: 5, unit: "회", memo: "연습 매치" },
   ];
   for (const s of samples) Records.create(s);
+  render();
+});
+
+exportBtn.addEventListener("click", () => {
+  const json = ImportExport.exportJSON();
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `plandoc_records_${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+importInput.addEventListener("change", async () => {
+  const file = importInput.files[0];
+  importInput.value = "";
+  if (!file) return;
+
+  importError.textContent = "";
+  try {
+    const text = await file.text();
+    const records = ImportExport.parseImport(text);
+    Records.replaceAll(records);
+    render();
+  } catch (err) {
+    importError.textContent = `가져오기 실패: ${err.message} (기존 기록은 그대로 유지됩니다.)`;
+  }
+});
+
+deleteAllBtn.addEventListener("click", () => {
+  if (!confirm("모든 기록을 삭제합니다. 되돌릴 수 없습니다. 계속할까요?")) return;
+  Records.removeAll();
+  importError.textContent = "";
   render();
 });
 

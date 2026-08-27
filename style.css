@@ -93,3 +93,28 @@ td button {
   font-size: 0.75rem;
   color: #666;
 }
+
+.file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #999;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.file-label:hover {
+  background: #f0f0f0;
+}
+
+.file-label input[type="file"] {
+  font-size: 0.75rem;
+  max-width: 140px;
+}
+
+#delete-all-btn {
+  border-color: #c0392b;
+  color: #c0392b;
+}

@@ -92,4 +92,61 @@ const Records = {
   removeAll() {
     Storage.save([]);
   },
+
+  replaceAll(records) {
+    Storage.save(records);
+  },
+};
+
+const ImportExport = {
+  exportJSON() {
+    return JSON.stringify(Records.getAll(), null, 2);
+  },
+
+  // 문자열을 검증해 기록 배열을 반환한다. 형식이 잘못되면 이유를 담은 Error를 던지고
+  // 기존 저장 데이터는 건드리지 않는다(호출부에서 검증 통과 후에만 저장한다).
+  parseImport(text) {
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error("JSON 형식이 올바르지 않습니다.");
+    }
+
+    if (!Array.isArray(data)) {
+      throw new Error("최상위 형식이 배열이 아닙니다.");
+    }
+
+    const seenIds = new Set();
+    for (let i = 0; i < data.length; i++) {
+      const r = data[i];
+      const pos = i + 1;
+      if (!r || typeof r !== "object") {
+        throw new Error(`${pos}번째 항목이 올바른 기록 형식이 아닙니다.`);
+      }
+      if (isBlank(r.id)) {
+        throw new Error(`${pos}번째 기록에 id가 없습니다.`);
+      }
+      if (seenIds.has(r.id)) {
+        throw new Error(`${pos}번째 기록의 id(${r.id})가 중복됩니다.`);
+      }
+      seenIds.add(r.id);
+
+      const error = validateRecordInput(r);
+      if (error) {
+        throw new Error(`${pos}번째 기록 오류: ${error}`);
+      }
+    }
+
+    return data.map((r) => ({
+      id: r.id,
+      date: r.date,
+      timezone: r.timezone || TIMEZONE,
+      item: String(r.item).trim(),
+      value: Number(r.value),
+      unit: String(r.unit).trim(),
+      memo: r.memo ? String(r.memo).trim() : "",
+      schemaVersion: r.schemaVersion || CURRENT_SCHEMA_VERSION,
+    }));
+  },
 };

@@ -45,6 +45,19 @@
   </section>
 
   <section class="panel">
+    <h2>내보내기 · 가져오기 · 전체 삭제</h2>
+    <div class="form-actions">
+      <button type="button" id="export-btn">JSON 내보내기</button>
+      <label class="file-label">
+        가져오기(복원)
+        <input type="file" id="import-input" accept="application/json,.json" />
+      </label>
+      <button type="button" id="delete-all-btn">전체 삭제</button>
+    </div>
+    <p class="error" id="import-error" role="alert"></p>
+  </section>
+
+  <section class="panel">
     <h2>요약</h2>
     <p id="summary-total">전체 기록: 0건</p>
   </section>
