@@ -227,9 +227,11 @@ function renderChecklistTable() {
 
   for (const item of items) {
     const tr = document.createElement("tr");
+    tr.style.color = item.color?.text || "#ffffff";
 
     const titleTd = document.createElement("td");
     titleTd.textContent = item.title;
+    titleTd.style.borderLeft = `3px solid ${item.color?.border || "#ffffff"}`;
 
     const repeatTd = document.createElement("td");
     repeatTd.textContent = formatRepeatBadge(item.repeat);
