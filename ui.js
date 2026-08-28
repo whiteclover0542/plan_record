@@ -8,6 +8,8 @@ const valueField = document.getElementById("field-value");
 const unitField = document.getElementById("field-unit");
 const tagsField = document.getElementById("field-tags");
 const memoField = document.getElementById("field-memo");
+const borderColorField = document.getElementById("field-border-color");
+const textColorField = document.getElementById("field-text-color");
 const errorEl = document.getElementById("form-error");
 const tbody = document.getElementById("record-tbody");
 const emptyMsg = document.getElementById("empty-msg");
@@ -85,6 +87,8 @@ function enterEditMode(record) {
   unitField.value = record.unit;
   tagsField.value = (record.tags || []).join(", ");
   memoField.value = record.memo || "";
+  borderColorField.value = record.color?.border || "#ffffff";
+  textColorField.value = record.color?.text || "#ffffff";
   formTitle.textContent = "기록 수정";
   submitBtn.textContent = "저장";
   cancelEditBtn.hidden = false;
@@ -257,6 +261,7 @@ function renderCalendar(records) {
     for (const c of dueChecklist) {
       const chip = document.createElement("label");
       chip.className = "day-checklist-item";
+      chip.style.borderColor = c.color?.border || "#ffffff";
 
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
@@ -270,7 +275,11 @@ function renderCalendar(records) {
 
       const text = document.createElement("span");
       text.className = "day-checklist-label";
-      if (done) text.classList.add("done");
+      if (done) {
+        text.classList.add("done");
+      } else {
+        text.style.color = c.color?.text || "#ffffff";
+      }
       text.textContent = c.title;
       text.title = c.title;
 
@@ -284,6 +293,8 @@ function renderCalendar(records) {
       const hasValue = !isBlank(r.value) || !isBlank(r.unit);
       item.textContent = hasValue ? `${r.item} · ${r.value}${r.unit}` : r.item;
       item.title = item.textContent;
+      item.style.borderColor = r.color?.border || "#ffffff";
+      item.style.color = r.color?.text || "#ffffff";
 
       // 칸이 작아 목록에서는 요약만 보여주고, 클릭하면 상세 모달에서 전체 정보 + 수정·삭제를 보여준다.
       item.addEventListener("click", () => openRecordDetail(r));
@@ -389,6 +400,7 @@ form.addEventListener("submit", (e) => {
     unit: unitField.value,
     tags: tagsField.value,
     memo: memoField.value,
+    color: { border: borderColorField.value, text: textColorField.value },
   };
 
   try {

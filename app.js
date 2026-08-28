@@ -168,12 +168,27 @@ function normalizeTags(tags) {
   return [];
 }
 
+const DEFAULT_CHIP_COLOR = "#ffffff";
+
+function isValidHexColor(s) {
+  return typeof s === "string" && /^#[0-9a-fA-F]{6}$/.test(s);
+}
+
+// 캘린더 칩의 테두리/글자 색(선택 커스터마이즈). 값이 없거나 형식이 잘못되면 기본 흰색을 쓴다.
+function normalizeColor(color) {
+  const c = color || {};
+  return {
+    border: isValidHexColor(c.border) ? c.border : DEFAULT_CHIP_COLOR,
+    text: isValidHexColor(c.text) ? c.text : DEFAULT_CHIP_COLOR,
+  };
+}
+
 const Records = {
   getAll() {
     return Storage.load();
   },
 
-  create({ date, item, value, unit, memo, tags }) {
+  create({ date, item, value, unit, memo, tags, color }) {
     const error = validateRecordInput({ date, item, value, unit });
     if (error) throw new Error(error);
 
@@ -186,6 +201,7 @@ const Records = {
       unit: isBlank(unit) ? "" : String(unit).trim(),
       memo: memo ? String(memo).trim() : "",
       tags: normalizeTags(tags),
+      color: normalizeColor(color),
       schemaVersion: CURRENT_SCHEMA_VERSION,
     };
 
@@ -207,6 +223,7 @@ const Records = {
     merged.value = isBlank(merged.value) ? "" : Number(merged.value);
     merged.unit = isBlank(merged.unit) ? "" : String(merged.unit).trim();
     merged.tags = normalizeTags(patch.tags !== undefined ? patch.tags : merged.tags);
+    merged.color = normalizeColor(patch.color !== undefined ? patch.color : merged.color);
     records[index] = merged;
     Storage.save(records);
     return merged;
@@ -279,6 +296,7 @@ const ImportExport = {
       unit: isBlank(r.unit) ? "" : String(r.unit).trim(),
       memo: r.memo ? String(r.memo).trim() : "",
       tags: normalizeTags(r.tags),
+      color: normalizeColor(r.color),
       schemaVersion: r.schemaVersion || 1,
     }));
 

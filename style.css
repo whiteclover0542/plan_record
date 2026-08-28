@@ -220,6 +220,27 @@ header .sub {
   display: none;
 }
 
+.color-picker-row {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 0.6rem;
+}
+
+.color-picker-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.color-picker-row input[type="color"] {
+  padding: 0.15rem;
+  width: 3.2rem;
+  height: 1.9rem;
+  cursor: pointer;
+}
+
 form label {
   display: flex;
   flex-direction: column;
@@ -487,9 +508,10 @@ td button {
 .day-record-item {
   display: block;
   background: var(--input-bg);
+  border: 1px solid #ffffff;
   border-radius: 3px;
   padding: 0.1rem 0.3rem;
-  color: var(--text);
+  color: #ffffff;
   cursor: pointer;
   flex-shrink: 0;
   overflow: hidden;
@@ -506,7 +528,7 @@ td button {
   align-items: center;
   gap: 0.25rem;
   background: rgba(179, 179, 184, 0.12);
-  border: 1px solid var(--checklist-accent);
+  border: 1px solid #ffffff;
   border-radius: 3px;
   padding: 0.1rem 0.3rem;
   cursor: pointer;
@@ -522,7 +544,7 @@ td button {
 }
 
 .day-checklist-label {
-  color: var(--text);
+  color: #ffffff;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

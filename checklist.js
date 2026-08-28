@@ -66,7 +66,7 @@ const ChecklistItems = {
     return ChecklistStorage.load();
   },
 
-  create(title, repeat, range) {
+  create(title, repeat, range, color) {
     const trimmed = String(title || "").trim();
     if (!trimmed) throw new Error("할 일을 입력해주세요.");
     if (repeat.type === "weekly" && (!Array.isArray(repeat.days) || repeat.days.length === 0)) {
@@ -84,6 +84,7 @@ const ChecklistItems = {
       title: trimmed,
       repeat,
       range: { start: (range && range.start) || null, end: (range && range.end) || null },
+      color: normalizeColor(color),
       completedDates: [],
     };
 
@@ -130,6 +131,8 @@ const checklistMonthdaysField = document.getElementById("checklist-monthdays");
 const checklistRangePicker = document.getElementById("checklist-range-picker");
 const checklistStartDateField = document.getElementById("checklist-start-date");
 const checklistEndDateField = document.getElementById("checklist-end-date");
+const checklistBorderColorField = document.getElementById("checklist-border-color");
+const checklistTextColorField = document.getElementById("checklist-text-color");
 const checklistError = document.getElementById("checklist-error");
 const checklistTableTitle = document.getElementById("checklist-table-title");
 const checklistTableTbody = document.getElementById("checklist-table-tbody");
@@ -300,8 +303,10 @@ checklistForm.addEventListener("submit", (e) => {
     end: checklistEndDateField.value || null,
   };
 
+  const color = { border: checklistBorderColorField.value, text: checklistTextColorField.value };
+
   try {
-    ChecklistItems.create(checklistTitleField.value, repeat, range);
+    ChecklistItems.create(checklistTitleField.value, repeat, range, color);
     checklistForm.reset();
     checklistWeekdayPicker.hidden = true;
     checklistMonthdayPicker.hidden = true;
