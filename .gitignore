@@ -1,0 +1,3 @@
+# 내보내기(JSON) 백업을 실수로 이 폴더에 저장한 경우 대비
+*.private.json
+plandoc_records_*.json
