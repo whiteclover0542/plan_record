@@ -140,7 +140,7 @@ const checklistTableEmpty = document.getElementById("checklist-table-empty");
 let lastChecklistCount = 0;
 
 function formatRepeatBadge(repeat) {
-  if (repeat.type === "once") return "오늘만";
+  if (repeat.type === "once") return repeat.date;
   if (repeat.type === "daily") return "매일";
   if (repeat.type === "weekly") {
     return repeat.days

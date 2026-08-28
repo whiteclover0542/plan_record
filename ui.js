@@ -153,13 +153,15 @@ function renderTable(records) {
 
   for (const r of records) {
     const tr = document.createElement("tr");
+    tr.style.color = r.color?.text || "#ffffff";
 
     const cells = [r.date, r.item, r.value, r.unit, (r.tags || []).join(", "), r.memo || ""];
-    for (const text of cells) {
+    cells.forEach((text, i) => {
       const td = document.createElement("td");
       td.textContent = text;
+      if (i === 0) td.style.borderLeft = `3px solid ${r.color?.border || "#ffffff"}`;
       tr.appendChild(td);
-    }
+    });
 
     const actionTd = document.createElement("td");
 
