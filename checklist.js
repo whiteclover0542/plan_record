@@ -108,6 +108,55 @@ const ChecklistItems = {
     else item.completedDates.splice(idx, 1);
     ChecklistStorage.save(items);
   },
+
+  replaceAll(items) {
+    ChecklistStorage.save(items);
+  },
+};
+
+// 기록(Records)의 ImportExport와 동일한 방식: 이미 파싱된 배열을 검증·정규화해 반환한다.
+// 형식이 잘못되면 이유를 담은 Error를 던지고, 호출부에서 검증 통과 후에만 저장한다.
+const ChecklistImportExport = {
+  parseItems(data) {
+    if (!Array.isArray(data)) {
+      throw new Error("체크리스트 형식이 배열이 아닙니다.");
+    }
+
+    const seenIds = new Set();
+    for (let i = 0; i < data.length; i++) {
+      const it = data[i];
+      const pos = i + 1;
+      if (!it || typeof it !== "object") {
+        throw new Error(`체크리스트 ${pos}번째 항목이 올바른 형식이 아닙니다.`);
+      }
+      if (isBlank(it.id)) {
+        throw new Error(`체크리스트 ${pos}번째 항목에 id가 없습니다.`);
+      }
+      if (seenIds.has(it.id)) {
+        throw new Error(`체크리스트 ${pos}번째 항목의 id(${it.id})가 중복됩니다.`);
+      }
+      seenIds.add(it.id);
+      if (isBlank(it.title)) {
+        throw new Error(`체크리스트 ${pos}번째 항목에 title이 없습니다.`);
+      }
+      const repeatType = it.repeat && it.repeat.type;
+      if (!["once", "daily", "weekly", "monthly"].includes(repeatType)) {
+        throw new Error(`체크리스트 ${pos}번째 항목의 반복 설정이 올바르지 않습니다.`);
+      }
+      if ((repeatType === "weekly" || repeatType === "monthly") && !Array.isArray(it.repeat.days)) {
+        throw new Error(`체크리스트 ${pos}번째 항목의 반복 요일/날짜가 올바르지 않습니다.`);
+      }
+    }
+
+    return data.map((it) => ({
+      id: it.id,
+      title: String(it.title).trim(),
+      repeat: it.repeat,
+      range: { start: (it.range && it.range.start) || null, end: (it.range && it.range.end) || null },
+      color: normalizeColor(it.color),
+      completedDates: Array.isArray(it.completedDates) ? it.completedDates.filter((d) => typeof d === "string") : [],
+    }));
+  },
 };
 
 function parseMonthDays(text) {

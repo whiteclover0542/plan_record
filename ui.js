@@ -482,7 +482,8 @@ seedBtn.addEventListener("click", () => {
 });
 
 exportBtn.addEventListener("click", () => {
-  const json = ImportExport.exportJSON();
+  const payload = { records: Records.getAll(), checklist: ChecklistItems.getAll() };
+  const json = JSON.stringify(payload, null, 2);
   const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -502,11 +503,32 @@ importInput.addEventListener("change", async () => {
   importError.textContent = "";
   try {
     const text = await file.text();
-    const records = ImportExport.parseImport(text);
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error("JSON 형식이 올바르지 않습니다.");
+    }
+
+    // 이전 형식(배열 = 기록만, 체크리스트 정보 없음)과 새 형식({records, checklist})을
+    // 모두 지원한다. 이전 형식을 가져올 때는 체크리스트를 건드리지 않는다 — 그 파일은
+    // 애초에 체크리스트를 모르므로, 지금 있는 체크리스트를 지울 근거가 없다.
+    const isLegacyArray = Array.isArray(data);
+    if (!isLegacyArray && (!data || typeof data !== "object" || !Array.isArray(data.records))) {
+      throw new Error("최상위 형식이 배열이거나 records 배열을 포함한 객체여야 합니다.");
+    }
+
+    const records = ImportExport.parseImport(JSON.stringify(isLegacyArray ? data : data.records));
+    const checklist = isLegacyArray
+      ? null
+      : ChecklistImportExport.parseItems(Array.isArray(data.checklist) ? data.checklist : []);
+
     Records.replaceAll(records);
+    if (checklist) ChecklistItems.replaceAll(checklist);
     render();
+    renderChecklist();
   } catch (err) {
-    importError.textContent = `가져오기 실패: ${err.message} (기존 기록은 그대로 유지됩니다.)`;
+    importError.textContent = `가져오기 실패: ${err.message} (기존 기록·체크리스트는 그대로 유지됩니다.)`;
   }
 });
 
