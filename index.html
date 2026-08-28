@@ -18,6 +18,12 @@
   <section class="panel">
     <div class="list-header">
       <h2>기록 목록</h2>
+      <label class="tag-filter-label">
+        태그 필터
+        <select id="tag-filter-select">
+          <option value="">전체</option>
+        </select>
+      </label>
       <button type="button" id="view-toggle-btn">📋 테이블로 보기</button>
     </div>
 
@@ -141,7 +147,7 @@
     <h3>주간 요약 (월요일~일요일, Asia/Seoul)</h3>
     <table id="weekly-table">
       <thead>
-        <tr><th>기간</th><th>건수</th><th>항목별 합계</th></tr>
+        <tr><th>기간</th><th>건수</th><th>항목별 합계</th><th>태그별 합계</th></tr>
       </thead>
       <tbody id="weekly-tbody"></tbody>
     </table>

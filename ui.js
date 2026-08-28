@@ -13,6 +13,7 @@ const textColorField = document.getElementById("field-text-color");
 const errorEl = document.getElementById("form-error");
 const tbody = document.getElementById("record-tbody");
 const emptyMsg = document.getElementById("empty-msg");
+const tagFilterSelect = document.getElementById("tag-filter-select");
 const summaryTotal = document.getElementById("summary-total");
 const formTitle = document.getElementById("form-title");
 const submitBtn = document.getElementById("submit-btn");
@@ -60,6 +61,39 @@ let calMonth = todayInit.getMonth(); // 0-indexed
 const CAL_WEEK_START_KEY = "plandoc_cal_week_start";
 let calWeekStart = localStorage.getItem(CAL_WEEK_START_KEY) === "sun" ? "sun" : "mon";
 calWeekStartSelect.value = calWeekStart;
+
+let tagFilter = "";
+
+function getAllTags(records) {
+  const set = new Set();
+  for (const r of records) {
+    for (const t of r.tags || []) set.add(t);
+  }
+  return [...set].sort((a, b) => a.localeCompare(b, "ko"));
+}
+
+// 기록에 실제로 쓰인 태그로 옵션 목록을 다시 만든다. 삭제·수정으로 더 이상
+// 존재하지 않게 된 태그가 선택돼 있었다면 필터를 전체로 되돌린다.
+function refreshTagFilterOptions(records) {
+  const tags = getAllTags(records);
+  const current = tagFilterSelect.value;
+
+  tagFilterSelect.innerHTML = "";
+  const allOption = document.createElement("option");
+  allOption.value = "";
+  allOption.textContent = "전체";
+  tagFilterSelect.appendChild(allOption);
+
+  for (const t of tags) {
+    const opt = document.createElement("option");
+    opt.value = t;
+    opt.textContent = t;
+    tagFilterSelect.appendChild(opt);
+  }
+
+  tagFilterSelect.value = tags.includes(current) ? current : "";
+  tagFilter = tagFilterSelect.value;
+}
 
 function clearError() {
   errorEl.textContent = "";
@@ -136,16 +170,27 @@ function render() {
     .slice()
     .sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")));
 
-  lastRecordCount = records.length;
-  renderTable(records);
-  renderCalendar(records);
+  refreshTagFilterOptions(records);
+  const filteredRecords = tagFilter ? records.filter((r) => (r.tags || []).includes(tagFilter)) : records;
 
-  summaryTotal.textContent = `전체 기록: ${records.length}건`;
+  lastRecordCount = filteredRecords.length;
+  renderTable(filteredRecords);
+  renderCalendar(filteredRecords);
+
+  summaryTotal.textContent = tagFilter
+    ? `전체 기록: ${records.length}건 · 태그 "${tagFilter}" 필터: ${filteredRecords.length}건`
+    : `전체 기록: ${records.length}건`;
   schemaStatus.textContent = `데이터 형식: schemaVersion v${CURRENT_SCHEMA_VERSION} · v1 형식(태그 필드 없음)으로 저장·가져오기된 기록은 불러오는 즉시 자동으로 v${CURRENT_SCHEMA_VERSION}로 변환됩니다 (id·날짜·값·단위는 그대로 유지).`;
 
+  // 주간 요약은 태그 필터와 무관하게 항상 전체 기록 기준(유효성 검사 결과 포함)으로 계산한다.
   renderWeeklySummary(records);
   refreshChecklistTableVisibility();
 }
+
+tagFilterSelect.addEventListener("change", () => {
+  tagFilter = tagFilterSelect.value;
+  render();
+});
 
 function renderTable(records) {
   tbody.innerHTML = "";
@@ -381,7 +426,13 @@ function renderWeeklySummary(records) {
       .map(([item, sum]) => `${item}: ${sum}`)
       .join(", ");
 
-    tr.append(periodTd, countTd, itemsTd);
+    const tagsTd = document.createElement("td");
+    tagsTd.textContent =
+      Object.entries(w.sumByTag)
+        .map(([tag, sum]) => `${tag}: ${sum}`)
+        .join(", ") || "-";
+
+    tr.append(periodTd, countTd, itemsTd, tagsTd);
     weeklyTbody.appendChild(tr);
   }
 

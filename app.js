@@ -145,11 +145,15 @@ const WeeklySummary = {
       const { weekStart, weekEnd } = getWeekRange(r.date);
       const key = weekStart;
       if (!weekMap.has(key)) {
-        weekMap.set(key, { weekStart, weekEnd, count: 0, sumByItem: {} });
+        weekMap.set(key, { weekStart, weekEnd, count: 0, sumByItem: {}, sumByTag: {} });
       }
       const bucket = weekMap.get(key);
       bucket.count += 1;
-      bucket.sumByItem[r.item] = (bucket.sumByItem[r.item] || 0) + (isBlank(r.value) ? 0 : Number(r.value));
+      const numValue = isBlank(r.value) ? 0 : Number(r.value);
+      bucket.sumByItem[r.item] = (bucket.sumByItem[r.item] || 0) + numValue;
+      for (const t of Array.isArray(r.tags) ? r.tags : []) {
+        bucket.sumByTag[t] = (bucket.sumByTag[t] || 0) + numValue;
+      }
     }
 
     const weeks = Array.from(weekMap.values()).sort((a, b) => a.weekStart.localeCompare(b.weekStart));
