@@ -288,6 +288,10 @@ button:hover {
   min-height: 1.2em;
 }
 
+.required-mark {
+  color: var(--danger);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
