@@ -91,20 +91,6 @@
 
   p { margin: 0 0 8px 0; }
 
-  .card-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
-    background: var(--accent);
-    color: #fff;
-    font-size: 9.5pt;
-    font-weight: 700;
-    margin-right: 7px;
-  }
-
   .link-box {
     display: inline-block;
     font-family: "Consolas", monospace;
@@ -133,12 +119,6 @@
     color: var(--muted);
     margin-top: 4px;
     text-align: center;
-  }
-
-  .grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
   }
 
   .note-box {
@@ -253,8 +233,6 @@
     margin: 6px 0 8px 0;
   }
 
-  table caption { text-align: left; }
-
   th, td {
     border: 1px solid var(--line);
     padding: 5px 8px;
@@ -265,13 +243,6 @@
   th {
     background: var(--panel-bg);
     font-weight: 700;
-  }
-
-  table.contract td:nth-child(2) {
-    text-align: center;
-    color: var(--ok);
-    font-weight: 700;
-    white-space: nowrap;
   }
 
   ol.final-check {
@@ -302,36 +273,6 @@
     font-size: 8.6pt;
   }
 
-  ol.final-check .fc-title {
-    font-weight: 700;
-    display: block;
-    margin-bottom: 2px;
-  }
-
-  ol.final-check .fc-meta {
-    color: var(--muted);
-    font-size: 8.6pt;
-    display: block;
-  }
-
-  .card-block {
-    border-top: 1px dashed var(--line);
-    padding-top: 7mm;
-    margin-top: 7mm;
-  }
-
-  .card-block:first-of-type {
-    border-top: none;
-    padding-top: 0;
-    margin-top: 0;
-  }
-
-  .meta-line {
-    color: var(--muted);
-    font-size: 8.8pt;
-    margin-top: 2px;
-  }
-
   .cap-label {
     font-weight: 700;
     font-size: 9.4pt;
@@ -354,27 +295,39 @@
   <span class="kicker">과제 제출</span>
   <h1>T06 플랜두씨 다이어리 1</h1>
   <p class="desc">
-    계획한 나와 실제의 나를 비교하는 개인 기록기. 원본 요구사항은 ASSINGMENT.md, 작업 이력은 PROGRESS.md, 5일 실사용 로그는 card5-log.md에 있다.
-    아래 스크린샷은 "합성 기록 3건 채우기" 또는 직접 입력한 <strong>합성(가상) 데이터</strong>로 재현했다. 실제 개인 기록(PC 전용)은 포함하지 않는다.
+    계획(Plan) → 실제로 한 일(Do) → 돌아보기(See)가 하나로 이어지는 다이어리. 로그인은 없고, 자료는 Supabase(Postgres) 서버 데이터베이스에 저장한다.
+    2026-08-31에 과제 요구사항이 옛 습관 기록기(카드1~5, localStorage)에서 이 내용으로 바뀌었다 — 옛 기록기는 지우지 않고 화면 위 모드 전환으로 그대로 유지했다.
+    원본 요구사항은 ASSINGMENT.md, 작업 이력·설계 결정은 PROGRESS.md에 있다.
   </p>
 </div>
 
 <section>
-  <h2>실사용 화면 (한눈에 보기)</h2>
-  <p>카드1을 마친 날부터 서로 다른 실제 날짜 5일(8/27~8/31)간 사용한 화면이다. 기록 8건 + 반복 체크리스트 2건이 남아 있고, 모두 <code>test</code> 태그를 붙인 가상 기록("테스트 1", "게임", "독서", "강의" 등)이다. 8/28에 일부러 심어둔 "초록색" 기록(항목명·표시 색상 불일치)은 5일째에 실제 색상을 초록으로 맞춰 수정한 뒤의 상태다.</p>
-  <figure class="figure">
-    <img src="screenshots/card5-03-actual-5day-calendar.png" alt="실사용 5일 캘린더 뷰" />
-    <figcaption>캘린더 뷰 — 8/27~8/31 기록 + 반복 체크리스트</figcaption>
-  </figure>
-  <figure class="figure">
-    <img src="screenshots/card5-04-actual-5day-table.png" alt="실사용 5일 테이블 뷰" />
-    <figcaption>테이블 뷰 — 전체 기록 목록 + 체크리스트</figcaption>
-  </figure>
+  <h2>결과물 주소</h2>
+  <p><span class="link-box">https://whiteclover0542.github.io/plan_record/</span></p>
+  <p>로그인 없이 열리고, 기본 화면이 "계획 다이어리 (Plan·Do·See)" 모드다.</p>
 </section>
 
 <section>
-  <h2>공개 주소</h2>
-  <p><span class="link-box">https://whiteclover0542.github.io/plan_record/</span></p>
+  <h2>소스 주소</h2>
+  <p><span class="link-box">https://github.com/whiteclover0542/plan_record</span></p>
+  <p>공개(Public) 저장소, 로그인 없이 열린다.</p>
+</section>
+
+<section>
+  <h2>실사용 화면 (실제 데이터)</h2>
+  <p>"T06 플랜두씨 다이어리 앱 만들기" — 이 앱을 만드는 실제 작업 자체를 계획으로 등록했다. 할 일 6개(5개 완료), 실행 기록 5개를 실제 git 커밋 이력의 작업 시각을 근거로 입력했다.</p>
+  <figure class="figure">
+    <img src="screenshots/pds-01-calendar-real-data.png" alt="전체 할 일 캘린더 — 실제 계획·할일 데이터" />
+    <figcaption>전체 할 일 캘린더 — "T06 플랜두씨 다이어리 앱 만들기" 계획 막대와 그 아래 완료된 할 일들. (옆에 남아있는 test/test1~3은 예전 캘린더 기능 테스트용 잔여 데이터로, plans 테이블은 설계상 삭제 기능이 없어 지우지 못했다 — PROGRESS.md 참고)</figcaption>
+  </figure>
+  <figure class="figure">
+    <img src="screenshots/pds-02-retro-aggregates.png" alt="돌아보기 집계 — 실제 데이터 기준" />
+    <figcaption>돌아보기 집계 — 계획 6 · 완료 5 · 지연 0 · 막힘 1 · 예상 570분 · 실제 324분 · 차이 -246분</figcaption>
+  </figure>
+  <figure class="figure">
+    <img src="screenshots/pds-03-retro-drilldown.png" alt="돌아보기 드릴다운" />
+    <figcaption>"막힘" 숫자(1)를 클릭하면 근거가 된 할 일("Plan-Do-See 화면 구현 + 옛 습관 기록기와 병합")로 드릴다운된다</figcaption>
+  </figure>
 </section>
 
 <section class="long">
@@ -383,158 +336,61 @@
   <p class="cap-label">어디로 가나요</p>
   <p><span class="link-box">https://whiteclover0542.github.io/plan_record/</span></p>
 
-  <p class="cap-label">무엇을 하나요 (3단계)</p>
+  <p class="cap-label">세 단계 안에 무엇을 하나요</p>
   <ol class="steps">
-    <li>캘린더에서 아무 날짜 칸을 보고, 왼쪽 "기록 추가" 폼에 날짜·항목·값·단위를 입력한 뒤 "추가"를 누른다.</li>
-    <li>방금 생긴 칸을 클릭해 상세 모달을 열고 "수정"으로 값을 바꿔 저장하거나 "삭제"를 눌러본다.</li>
-    <li>화면 아래 "요약" 영역에서 전체 건수와 주간 요약(항목별 합계)이 방금 한 동작에 맞춰 함께 바뀌는지 확인한다.</li>
+    <li>계획 목록에서 "T06 플랜두씨 다이어리 앱 만들기" 계획을 연다.</li>
+    <li>할 일 탭에서 그 계획에 딸린 할 일 목록(완료 5개 · 진행중 1개)을 본다.</li>
+    <li>돌아보기 탭으로 이동해 집계 숫자(예: 막힘 수 1) 중 하나를 클릭한다.</li>
   </ol>
 
   <p class="cap-label">무엇이 보이면 통과인가요</p>
   <ul class="check-list">
-    <li>추가·수정·삭제 직후 목록(캘린더/테이블) 행과 "요약" 영역의 건수·주간 요약이 같은 화면에서 함께 바뀐다</li>
-    <li>"내보내기·가져오기·전체 삭제" 영역에 세 버튼과, 손상된 파일을 가져올 때 오류 문구가 보인다</li>
-    <li>"주간 요약" 표에 기간(월요일~일요일)과 항목별 합계가 보이고, 잘못된 날짜·값은 별도 "집계에서 제외된 기록" 문구로만 표시된다</li>
-    <li>화면 어디에도 실제 개인 기록·이름·연락처 같은 정보 없이 합성(가상) 데이터만 보인다</li>
+    <li>계획·할 일·실행 기록이 실데이터로 채워져 있다</li>
+    <li>돌아보기 집계(계획 6·완료 5·지연 0·막힘 1·예상 570분·실제 324분·차이 -246분)가 0이 아니다</li>
+    <li>숫자를 클릭하면 근거가 된 기록으로 이동한다</li>
   </ul>
 
-  <p class="cap-label">안 될 때</p>
-  <dl class="fail-box">
-    <dt>오류 문구</dt>
-    <dd>날짜·항목을 비운 채 "추가"를 누르면 폼 아래 빨간 글씨로 "날짜, 항목은 비워둘 수 없습니다." 등이 뜬다 — 필수값을 채우면 해결된다</dd>
-    <dt>확인할 항목</dt>
-    <dd>브라우저가 시크릿(사생활 보호) 모드이거나 localStorage를 막아둔 경우 기록이 저장되지 않을 수 있다 — 일반 창에서 열었는지 확인한다</dd>
-    <dt>복구 방법</dt>
-    <dd>"전체 삭제"로 비운 뒤 "합성 기록 3건 채우기" 버튼을 누르면 항상 같은 예시 데이터로 되돌아온다</dd>
-  </dl>
+  <p class="cap-label">안 될 때는 무엇이 보이나요</p>
+  <div class="fail-box">
+    <dl>
+      <dt>빈 상태</dt>
+      <dd>목록이 "기록이 없습니다" 같은 빈 상태로 보인다</dd>
+      <dt>콘솔 오류</dt>
+      <dd>개발자 콘솔에 Supabase REST 요청 실패(네트워크 오류·CORS·401 등)가 찍힌다</dd>
+    </dl>
+  </div>
 </section>
 
 <section>
-  <h2>AI 3줄</h2>
+  <h2>AI와 내 판단 3줄</h2>
   <div class="ai-lines">
     <div class="line">
       <span class="tag">AI에게 맡긴 일</span>
-      CRUD·내보내기/가져오기·v1→v2 변환·주간 요약·카드5 개선(기록별 "중요 표시(굵게+★)") 등 app.js/ui.js 구현 전체를 AI에게 맡겼다.
+      DB 스키마 설계, Supabase 연동 코드와 화면 구현, 자동화 테스트, 문서(README/PROGRESS) 정리, 그리고 실제 계획·할 일·실행 기록을 anon key REST API로 DB에 직접 입력하는 작업(무엇을 넣을지는 내가 지정).
     </div>
     <div class="line">
-      <span class="tag">내가 판단한 일</span>
-      필드 정의, 기준 시간대(Asia/Seoul)·주 시작 요일(월요일), 공개용 데이터는 합성 데이터만 쓴다는 원칙, 그리고 5일 실사용 중 반복된 불편(캘린더·목록에서 어떤 기록이 중요한지 구분이 안 됨)으로 무엇을 고칠지는 직접 정했다.
+      <span class="tag">내가 직접 판단한 일</span>
+      실데이터로 어떤 계획을 넣을지(이 앱을 만드는 실제 작업 자체로 하기로 결정), 옛 습관 기록기를 지우지 않고 새 기능과 병합해서 유지할지, 운영 DB에 남아있던 예전 테스트 데이터를 지우고 진행할지 같은 방향 결정.
     </div>
     <div class="line">
-      <span class="tag">AI 말을 안 들은 일</span>
-      날짜 검증에서 AI가 제안한 Date.parse 방식을 쓰지 않았다 — 2026-02-30처럼 존재하지 않는 날짜가 3월로 밀려 통과되는 문제가 있어, 왕복 검증하는 isValidDateString을 직접 만들어 대신 썼다. 카드5에서도 AI가 처음 넣은 "굵게만" 처리로는 눈에 잘 안 띄어, 별 표시(★)·테두리 강조를 더 넣게 했다.
+      <span class="tag">AI 제안을 따르지 않은 일</span>
+      병합 초기에 AI가 옛 습관 기록기 파일(app.js/ui.js/checklist.js 등)을 전부 지우고 새 앱으로 통째로 교체했는데, 테마·형식·기능은 유지하고 새 기능만 얹으면 된다고 판단해 git에서 전부 되돌리고 다시 병합하도록 지시함.
     </div>
   </div>
 </section>
 
 <section class="long">
-  <h2>카드별 증거</h2>
-
-  <div class="card-block">
-    <h3><span class="card-num">1</span>기록의 구조 (생성·조회·수정·삭제)</h3>
-    <p>"합성 기록 3건 채우기"로 3건을 추가하고, 한 건을 수정, 한 건을 삭제했다. 목록(캘린더)이 매 동작마다 바로 갱신된다.</p>
-
-    <p class="cap-label">추가</p>
-    <figure class="figure"><img src="screenshots/card1-01-add.png" alt="카드1 추가" /></figure>
-
-    <p class="cap-label">수정 (운동 기록의 값을 999·메모를 "수정 테스트"로 변경)</p>
-    <figure class="figure"><img src="screenshots/card1-02-edit.png" alt="카드1 수정" /></figure>
-
-    <p class="cap-label">삭제 (독서 기록 삭제, 2건만 남음)</p>
-    <figure class="figure"><img src="screenshots/card1-03-delete.png" alt="카드1 삭제" /></figure>
-  </div>
-
-  <div class="card-block">
-    <h3><span class="card-num">2</span>내보내기와 전체 삭제</h3>
-    <p>새로고침 후에도 기록이 그대로 유지되고, 손상된 파일을 가져오면 기존 기록을 바꾸지 않은 채 오류 문구만 보인다.</p>
-
-    <p class="cap-label">새로고침 전·후 동일 (2건 → 새로고침 → 2건)</p>
-    <figure class="figure"><img src="screenshots/card2-01-after-reload.png" alt="카드2 새로고침 유지" /></figure>
-
-    <p class="cap-label">손상 파일 가져오기 거부 (JSON이 아닌 파일 업로드 시 기존 기록 유지 + 오류 문구)</p>
-    <figure class="figure"><img src="screenshots/card2-02-corrupted-import-rejected.png" alt="카드2 손상 파일 거부" /></figure>
-  </div>
-
-  <div class="card-block">
-    <h3><span class="card-num">3</span>기존 기록을 잃지 않는 변경 (v1 → v2 자동 변환)</h3>
-    <p>fixtures/v1-sample.json (schemaVersion 없는 v1 형식 3건)을 가져오기하면 id·날짜·값·단위는 그대로 유지된 채 자동으로 v2로 변환된다.</p>
-
-    <p class="cap-label">v1 파일 가져오기 결과</p>
-    <figure class="figure"><img src="screenshots/card3-01-v1-imported.png" alt="카드3 v1 가져오기" /></figure>
-
-    <p class="cap-label">변환 상태 안내 문구</p>
-    <figure class="figure"><img src="screenshots/card3-02-schema-status.png" alt="카드3 스키마 상태" /></figure>
-  </div>
-
-  <div class="card-block">
-    <h3><span class="card-num">4</span>날짜와 잘못된 값 (경계·오류 자료가 집계를 오염시키지 않음)</h3>
-    <p>저장소에 아래 6건을 직접 주입해(UI 정상 경로로는 애초에 저장되지 않는 값들) 방어 로직을 검증했다.</p>
-
-    <table>
-      <thead><tr><th>항목</th><th>값</th><th>처리</th></tr></thead>
-      <tbody>
-        <tr><td>월요일 경계 (2026-08-24)</td><td>운동 30분</td><td>집계 포함</td></tr>
-        <tr><td>일요일 경계 (2026-08-30)</td><td>운동 20분</td><td>집계 포함</td></tr>
-        <tr><td>필수값 누락</td><td>item 빈 문자열</td><td>제외(사유 표시)</td></tr>
-        <tr><td>id 중복</td><td>동일 id 재사용</td><td>제외(사유 표시)</td></tr>
-        <tr><td>잘못된 날짜</td><td>2026-02-30 (실존하지 않음)</td><td>제외(사유 표시)</td></tr>
-        <tr><td>비숫자 값</td><td>"abc"</td><td>제외(사유 표시)</td></tr>
-      </tbody>
-    </table>
-
-    <p class="cap-label">결과: 유효한 2건만 "운동: 50"으로 정상 집계, 나머지 4건은 사유와 함께 집계에서 제외됨(오염 없음)</p>
-    <figure class="figure"><img src="screenshots/card4-01-weekly-summary-skipped.png" alt="카드4 주간 요약 제외 처리" /></figure>
-  </div>
-
-  <div class="card-block">
-    <h3><span class="card-num">5</span>5일 사용 후 한 가지 개선</h3>
-    <ul class="check-list">
-      <li>5일간 서로 다른 실제 날짜(8/27~8/31)에 사용한 로그는 card5-log.md에 있다. 항목은 전부 test 태그를 붙인 가상 기록으로, 실제 개인 기록이 아니다. 캘린더·테이블 화면은 맨 앞 "실사용 화면" 참고.</li>
-      <li>반복된 불편: 캘린더·목록에서 어떤 기록이 "중요한" 기록인지 구분할 방법이 없었다 → 기록별 <strong>"중요 표시(굵게 + ★)"</strong> 옵션을 추가했다.</li>
-      <li>5일째, 8/28에 일부러 심어뒀던 기록 1건(항목명은 "초록색"인데 표시 색상은 어긋나 있던 기록)을 찾아 실제 표시 색상을 초록으로 맞춰 수정했다.</li>
-    </ul>
-
-    <p class="cap-label">요약 (전체 8건, 주간 요약에 항목별·태그별 합계)</p>
-    <figure class="figure"><img src="screenshots/card5-05-actual-5day-summary.png" alt="카드5 실사용 요약" /></figure>
-
-    <p>아래는 "잘못 입력한 값을 고치면 행 + 주간 요약이 함께 바뀐다"는 카드5 통과 기준을, 값이 바뀌는 경우로 한 번 더 재현한 것이다 — "운동 30분"으로 잘못 입력했던 기록을 "운동 50분"으로 고치면서 동시에 "중요 표시"도 켰다.</p>
-
-    <p class="cap-label">수정 전 — 목록과 주간 요약(운동: 30)</p>
-    <div class="grid-2">
-      <figure class="figure"><img src="screenshots/card5-01-wrong-value-before.png" alt="카드5 수정 전 목록" /></figure>
-      <figure class="figure"><img src="screenshots/card5-01b-summary-before.png" alt="카드5 수정 전 요약" /></figure>
-    </div>
-
-    <p class="cap-label">수정 후 — 값이 50으로 바뀌고 ★로 중요 표시됨, 주간 요약도 운동: 50으로 함께 갱신</p>
-    <div class="grid-2">
-      <figure class="figure"><img src="screenshots/card5-02-fixed-value-after.png" alt="카드5 수정 후 목록" /></figure>
-      <figure class="figure"><img src="screenshots/card5-02b-summary-after.png" alt="카드5 수정 후 요약" /></figure>
-    </div>
-  </div>
-</section>
-
-<section class="long">
-  <h2>마무리 체크리스트 (최종 검증 기준)</h2>
+  <h2>완주 체크리스트</h2>
   <ol class="final-check">
-    <li><span class="fc-title">공개 주소에서 합성 기록을 추가·수정·삭제할 수 있다</span><span class="fc-meta">판단: 공개 화면에서 세 동작 모두 성공 · 증거: origin/main == HEAD(카드5 커밋 3f9568c 포함 전부 푸시됨), 위 카드1 스크린샷</span></li>
-    <li><span class="fc-title">고유 ID로 정확한 한 건만 수정·삭제된다</span><span class="fc-meta">판단: 동일 항목 여러 건 중 대상 1건만 바뀌고 나머지는 그대로임을 확인 · 증거: Records.update/remove는 항상 id로 대상 탐색 (위 카드1 스크린샷)</span></li>
-    <li><span class="fc-title">필수값이 빈 기록은 저장되지 않는다</span><span class="fc-meta">판단: 빈 값으로 저장 시도 시 거부됨 · 증거: validateRecordInput(날짜·항목 필수), 위 검증 안내서 "안 될 때" 오류 문구</span></li>
-    <li><span class="fc-title">새로고침 뒤에도 기록 수와 값이 유지된다</span><span class="fc-meta">판단: 새로고침 전·후 ID·날짜·값이 동일 · 증거: 위 카드2 새로고침 전·후 스크린샷</span></li>
-    <li><span class="fc-title">내보낸 파일에서 ID·날짜·값·단위가 복원된다</span><span class="fc-meta">판단: 내보내기 → 가져오기 후 원본과 일치 · 증거: ImportExport.exportJSON/parseImport, 위 카드3 v1 가져오기 결과</span></li>
-    <li><span class="fc-title">전체 삭제 뒤 기록은 0건이다</span><span class="fc-meta">판단: 전체 삭제 실행 후 목록 확인 · 증거: Records.removeAll()</span></li>
-    <li><span class="fc-title">손상 파일은 기존 기록을 바꾸지 않고 오류 이유를 표시한다</span><span class="fc-meta">판단: 손상 파일 가져오기 시도 시 기존 기록 유지 + 오류 문구 표시 · 증거: 위 카드2 손상 파일 거부 스크린샷</span></li>
-    <li><span class="fc-title">v1·v2 변환 뒤 건수와 기존 값이 유지된다</span><span class="fc-meta">판단: 변환 전·후 ID·날짜·값·단위 대조 일치 · 증거: 위 카드3 스크린샷(fixtures/v1-sample.json 가져오기 결과)</span></li>
-    <li><span class="fc-title">변환을 두 번 실행해도 기록이 늘거나 다시 바뀌지 않는다(멱등성)</span><span class="fc-meta">판단: 동일 파일로 변환 함수 2회 실행 후 건수·값 비교 · 증거: migrateRecordToV2는 이미 v2면 원본 그대로 반환, Playwright로 변환·재로드 2회 후 값 불변 확인</span></li>
-    <li><span class="fc-title">주간 요약의 기간과 집계값이 보인다</span><span class="fc-meta">판단: 화면에 기준 시간대·주 시작 요일에 맞는 기간과 합계가 표시 · 증거: 위 카드4·카드5 요약 화면 스크린샷</span></li>
-    <li><span class="fc-title">잘못된 날짜·값이 집계에서 제외된다</span><span class="fc-meta">판단: 예상 결과표와 실제 집계 결과 일치 · 증거: PROGRESS.md 카드4 예상 결과표 대조, 위 카드4 스크린샷</span></li>
-    <li><span class="fc-title">실제 개인 기록·개인정보·비밀값이 공개 화면·파일·제출 기록에 0건이다</span><span class="fc-meta">판단: PROGRESS.md "항상 지킬 것" 체크리스트 통과 · 증거: 백엔드 없음(순수 프론트엔드, 비밀값 존재 자체가 불가), 이 문서 스크린샷 전부 합성 데이터·card5-log.md는 날짜·완료 여부만 기록</span></li>
-    <li><span class="fc-title">검증 안내서가 3단계 이내, 30초 안에 끝난다</span><span class="fc-meta">판단: 어디로/무엇을/통과기준/안될때 4항목 모두 작성, 행동이 3단계 이하 · 증거: 위 "검증 안내서" 섹션</span></li>
-    <li><span class="fc-title">오너가 공개 결과를 15초 안에 판정할 수 있다</span><span class="fc-meta">판단: 첫 화면만으로 통과 여부가 바로 드러남 · 증거: 위 "실사용 화면" 캘린더·테이블 스크린샷</span></li>
-    <li><span class="fc-title">AI 3줄이 작성되었다</span><span class="fc-meta">판단: 맡긴 일·판단한 일·안 들은 일 각 1줄 · 증거: 위 "AI 3줄" 섹션</span></li>
+    <li>계획 → 실제로 한 일 → 돌아보기가 서버 데이터베이스로 이어집니다. — Supabase Postgres 스키마로 구현, 전체 흐름(계획 생성→할일→완료/실행기록→돌아보기 집계) 확인</li>
+    <li>내가 실제로 세운 계획과 할 일과 실행 기록이 들어 있습니다. — 위 "실사용 화면" 참고</li>
+    <li>집계 숫자를 눌러 그 숫자가 나온 기록으로 갈 수 있습니다. — 위 드릴다운 스크린샷 참고</li>
+    <li>아직 로그인이 없다는 안내가 첫 화면에 적혀 있습니다. — 헤더에 고정 문구 표시</li>
+    <li>최종 소스, 스크립트 삽입, 비밀값 노출, 외부 공개 여부를 확인했습니다. — 배포 주소에서 직접 XSS(스크립트 리터럴)·비밀값·시크릿 창 접근 재확인</li>
   </ol>
 </section>
 
-<footer>T06 플랜두씨 다이어리 1 — 제출 문서 · whiteclover0542/plan_record</footer>
+<footer>T06 플랜두씨 다이어리 1 — 제출 문서 · whiteclover0542/plan_record · 2026-08-31</footer>
 
 </body>
 </html>

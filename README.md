@@ -65,7 +65,7 @@ python -m http.server 8000
 - [ASSINGMENT.md](ASSINGMENT.md) — 과제 요구사항 원본(동결)
 - [PROGRESS.md](PROGRESS.md) — 진행 상태, 설계 결정 이력, 검증 안내서, AI 3줄
 - [card5-log.md](card5-log.md) — 5일 실사용 로그(날짜·완료 여부만, 실제 개인 기록 값은 비공개)
-- [SUBMISSION.md](SUBMISSION.md) / [submission/SUBMISSION.pdf](submission/SUBMISSION.pdf) — 카드별 증거 스크린샷을 포함한 제출 문서
+- [SUBMISSION.md](SUBMISSION.md) / [submission/SUBMISSION.pdf](submission/SUBMISSION.pdf) — 결과물·소스 주소, 검증 안내서, AI 3줄을 담은 최종 제출 문서(옛 습관 기록기 카드별 증거는 git 이력에 보존)
 
 ## 개인정보·보안 원칙
 
