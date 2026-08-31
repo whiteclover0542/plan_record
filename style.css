@@ -1024,8 +1024,16 @@ tr.is-important {
   font-size: 0.85rem;
 }
 
-/* 할 일 캘린더 칩 — 그리드·칩 기본 모양은 위 습관 기록기의 .calendar-*, .day-record-item을 그대로 쓰고
-   여기서는 할 일 특유의 우선순위·상태 색만 얹는다. */
+/* 할 일 캘린더 칩 — 그리드·칩 기본 모양은 위 습관 기록기의 .calendar-*, .day-record-item을 그대로 쓰되,
+   글자 크기·padding은 아래 .plan-strip과 맞춰 계획 막대와 두께가 같아 보이게 한다. */
+#pds-app .todo-cal-item {
+  height: 1.05rem;
+  font-size: 0.65rem;
+  line-height: 0.95rem;
+  padding: 0 0.3rem;
+  box-sizing: border-box;
+}
+
 #pds-app .todo-cal-item.priority-high {
   border-color: #ff6b6b;
   color: #ff9a9a;
