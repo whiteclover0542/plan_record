@@ -9,6 +9,13 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+<nav class="mode-switcher">
+  <button type="button" id="mode-pds-btn" class="mode-btn is-active">계획 다이어리 (Plan·Do·See)</button>
+  <button type="button" id="mode-habit-btn" class="mode-btn">투두 기록기</button>
+</nav>
+
+<div id="habit-app" hidden>
 <header>
   <h1>PLAN_RECORD</h1>
   <p class="sub">기준 시간대 : Asia/Seoul  |  주간 요약 기준 : 월요일~일요일  |  화면에는 합성(가상) 데이터만 사용합니다.</p>
@@ -190,9 +197,196 @@
     </div>
   </div>
 </div>
+</div>
+
+<div id="pds-app">
+<header class="app-header">
+  <h1>플랜두씨 다이어리</h1>
+  <p class="login-notice">지금은 로그인이 없어 링크를 아는 사람은 누구나 볼 수 있습니다. 남이 봐도 괜찮은 내용만 넣으세요.</p>
+</header>
+
+<section class="calendar-overview">
+  <h2>전체 할 일 캘린더</h2>
+  <p class="muted">계획 선택과 상관없이 모든 계획의 할 일을 마감일 기준으로 보여줍니다. 칩을 누르면 상세·완료·수정이 가능합니다.</p>
+  <div class="calendar-nav">
+    <button type="button" id="todo-cal-prev-btn" aria-label="이전 달">◀</button>
+    <span id="todo-cal-month-label"></span>
+    <button type="button" id="todo-cal-today-btn">오늘</button>
+    <button type="button" id="todo-cal-next-btn" aria-label="다음 달">▶</button>
+  </div>
+  <div class="calendar-weekdays" id="todo-calendar-weekdays"></div>
+  <div class="calendar-grid" id="todo-calendar-grid"></div>
+</section>
+
+<nav class="tabs">
+  <button class="tab-btn is-active" data-tab="plan">1. 계획</button>
+  <button class="tab-btn" data-tab="todo">2. 할 일</button>
+  <button class="tab-btn" data-tab="retro">3. 돌아보기</button>
+</nav>
+
+<main>
+
+  <section id="tab-plan" class="tab-panel is-active">
+    <div class="two-col">
+      <div class="col">
+        <h2>계획 만들기</h2>
+        <form id="plan-form" class="form-grid">
+          <label>제목 <span class="req">*</span>
+            <input type="text" name="title" required placeholder="예: ALEPH 3주차 진행" />
+          </label>
+          <label>기간 시작 <span class="req">*</span>
+            <input type="date" name="period_start" required />
+          </label>
+          <label>기간 종료 <span class="req">*</span>
+            <input type="date" name="period_end" required />
+          </label>
+          <label>우선순위 <span class="req">*</span>
+            <select name="priority" required>
+              <option value="high">높음</option>
+              <option value="medium" selected>보통</option>
+              <option value="low">낮음</option>
+            </select>
+          </label>
+          <label>성공 기준 <span class="req">*</span>
+            <input type="text" name="success_criteria" required placeholder="예: 3개 챕터 완료" />
+          </label>
+          <label>예상 시간(분) <span class="req">*</span>
+            <input type="number" name="estimated_minutes" min="0" required placeholder="예: 600" />
+          </label>
+          <label>이어받을 돌아보기 메모 (선택)
+            <select name="carried_note_id" id="plan-carried-note-select">
+              <option value="">없음</option>
+            </select>
+          </label>
+          <div class="color-picker-row">
+            <label>캘린더 막대 테두리 색 <input type="color" name="color_border" value="#8a8a8f" /></label>
+            <label>캘린더 막대 글자 색 <input type="color" name="color_text" value="#f2f2f2" /></label>
+          </div>
+          <button type="submit">계획 저장</button>
+        </form>
+        <p id="plan-form-error" class="form-error" hidden></p>
+
+        <h2>계획 목록</h2>
+        <ul id="plan-list" class="item-list"></ul>
+      </div>
+
+      <div class="col">
+        <h2>계획 상세 / 수정</h2>
+        <div id="plan-detail" class="detail-box">
+          <p class="muted">왼쪽에서 계획을 선택하세요.</p>
+        </div>
+
+        <h3>수정 이력 (고치기 전 내용)</h3>
+        <ul id="plan-revision-list" class="item-list"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-todo" class="tab-panel">
+    <div id="todo-plan-context" class="plan-context"></div>
+
+    <div id="todo-area" hidden>
+      <h2>할 일 추가</h2>
+      <form id="todo-form" class="form-grid">
+        <label>제목 <span class="req">*</span>
+          <input type="text" name="title" required placeholder="예: 5장 문제풀이" />
+        </label>
+        <label>마감일 <span class="req">*</span>
+          <input type="date" name="due_date" required />
+        </label>
+        <label>우선순위 <span class="req">*</span>
+          <select name="priority" required>
+            <option value="high">높음</option>
+            <option value="medium" selected>보통</option>
+            <option value="low">낮음</option>
+          </select>
+        </label>
+        <label>태그 (쉼표로 구분)
+          <input type="text" name="tags" placeholder="예: 아침, 실내" />
+        </label>
+        <label>예상 시간(분) <span class="req">*</span>
+          <input type="number" name="estimated_minutes" min="0" required placeholder="예: 60" />
+        </label>
+        <button type="submit">할 일 추가</button>
+      </form>
+      <p id="todo-form-error" class="form-error" hidden></p>
+
+      <div class="toolbar">
+        <input type="search" id="todo-search" placeholder="제목 검색" />
+        <select id="todo-filter-status">
+          <option value="all">전체 상태</option>
+          <option value="open">진행 중</option>
+          <option value="done">완료</option>
+        </select>
+        <select id="todo-filter-tag">
+          <option value="all">전체 태그</option>
+        </select>
+        <select id="todo-sort">
+          <option value="due_date">마감일 빠른 순</option>
+          <option value="priority">우선순위 높은 순</option>
+          <option value="created_at">등록 오래된 순</option>
+        </select>
+      </div>
+      <p class="sort-rule-note">정렬 기준: 선택한 기준으로 먼저 정렬하고, 값이 같으면 마감일이 빠른 순, 그래도 같으면 생성 순서(ID)로 정렬합니다. 하루에 여러 할 일이 있으면 위쪽 캘린더 칸 안에서도 이 순서로 보입니다. 검색·필터·정렬은 위쪽 전체 캘린더에도 함께 적용됩니다.</p>
+    </div>
+  </section>
+
+  <section id="tab-retro" class="tab-panel">
+    <h2>돌아보기</h2>
+    <p class="muted">계획별 집계입니다. 숫자를 누르면 그 숫자를 구성한 기록으로 이동합니다.</p>
+    <div class="table-scroll">
+      <table id="retro-table" class="retro-table">
+        <thead>
+          <tr>
+            <th>계획</th><th>할 일 수</th><th>완료</th><th>지연</th><th>막힘</th>
+            <th>예상(분)</th><th>실제(분)</th><th>차이(분)</th>
+          </tr>
+        </thead>
+        <tbody id="retro-table-body"></tbody>
+      </table>
+    </div>
+
+    <div id="retro-drilldown" class="drilldown" hidden>
+      <h3 id="drilldown-title"></h3>
+      <ul id="drilldown-list" class="item-list"></ul>
+    </div>
+
+    <h3>다음 계획으로 넘길 한 줄</h3>
+    <div id="retro-note-context" class="plan-context"></div>
+    <form id="retro-note-form" class="form-grid" hidden>
+      <label>계획을 고치는 대신, 다음에 뭘 바꿀지 한 줄로 <span class="req">*</span>
+        <input type="text" name="note" required placeholder="예: 예상 시간을 실제보다 항상 낮게 잡는 버릇 고치기" />
+      </label>
+      <button type="submit">메모 저장</button>
+    </form>
+    <ul id="retro-note-list" class="item-list"></ul>
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  <button type="button" id="pds-export-btn">전체 자료 내보내기 (JSON)</button>
+  <span id="pds-export-status" class="muted"></span>
+</footer>
+
+<div id="todo-detail-overlay" class="modal-overlay" hidden>
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>할 일 상세</h3>
+      <button type="button" id="todo-detail-close-btn" aria-label="닫기">✕</button>
+    </div>
+    <div id="todo-detail-body"></div>
+  </div>
+</div>
+</div>
 
 <script src="app.js"></script>
 <script src="checklist.js"></script>
 <script src="ui.js"></script>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="pds-app.js"></script>
+<script src="pds-ui.js"></script>
 </body>
 </html>

@@ -1,0 +1,122 @@
+{
+  "$schema": "pds-schema-v2",
+  "description": "T06 플랜두씨 다이어리 1 — 계획(Plan)/할일(Todo)/실행기록(Do)/돌아보기(See) 데이터베이스 계약. 실제 DDL 원본은 supabase/schema.sql.",
+  "timezoneRules": {
+    "referenceTimezone": "Asia/Seoul",
+    "dateOnlyColumns": {
+      "description": "시간 없이 Asia/Seoul 달력 날짜만 의미하는 컬럼. postgres date 타입.",
+      "columns": ["plans.period_start", "plans.period_end", "todos.due_date"]
+    },
+    "instantColumns": {
+      "description": "UTC로 저장하고(postgres timestamptz), 화면에는 Asia/Seoul로 변환해 표시하는 컬럼.",
+      "columns": [
+        "plans.created_at", "plans.updated_at",
+        "plan_revisions.replaced_at",
+        "todos.created_at", "todos.completed_at", "todos.deleted_at",
+        "execution_logs.started_at", "execution_logs.ended_at", "execution_logs.created_at",
+        "retrospective_notes.created_at"
+      ]
+    },
+    "overdueRule": "todos.status <> 'done' AND todos.due_date < (Asia/Seoul 기준 오늘 날짜)"
+  },
+  "tables": [
+    {
+      "name": "plans",
+      "purpose": "계획 한 건. 수정해도 이 행의 id는 바뀌지 않고 내용만 갱신된다.",
+      "columns": [
+        { "name": "id", "type": "uuid", "primaryKey": true },
+        { "name": "title", "type": "text", "required": true },
+        { "name": "period_start", "type": "date", "required": true },
+        { "name": "period_end", "type": "date", "required": true },
+        { "name": "priority", "type": "text", "required": true, "enum": ["high", "medium", "low"] },
+        { "name": "success_criteria", "type": "text", "required": true },
+        { "name": "estimated_minutes", "type": "int", "required": true, "constraint": ">= 0" },
+        { "name": "carried_note_id", "type": "uuid", "nullable": true, "references": "retrospective_notes.id", "description": "이 계획이 어느 돌아보기 메모를 이어받아 만들어졌는지" },
+        { "name": "color_border", "type": "text", "default": "#8a8a8f", "description": "캘린더 막대 테두리 색(사용자 지정)" },
+        { "name": "color_text", "type": "text", "default": "#f2f2f2", "description": "캘린더 막대 글자 색(사용자 지정)" },
+        { "name": "created_at", "type": "timestamptz" },
+        { "name": "updated_at", "type": "timestamptz", "description": "UPDATE 트리거가 매 수정마다 now()로 갱신" }
+      ]
+    },
+    {
+      "name": "plan_revisions",
+      "purpose": "plans가 UPDATE되기 직전 OLD row 스냅샷. BEFORE UPDATE 트리거(snapshot_plan_before_update)가 자동 적재하므로 앱 코드와 무관하게 항상 보존된다.",
+      "columns": [
+        { "name": "id", "type": "uuid", "primaryKey": true },
+        { "name": "plan_id", "type": "uuid", "references": "plans.id", "onDelete": "cascade" },
+        { "name": "prev_title", "type": "text" },
+        { "name": "prev_period_start", "type": "date" },
+        { "name": "prev_period_end", "type": "date" },
+        { "name": "prev_priority", "type": "text" },
+        { "name": "prev_success_criteria", "type": "text" },
+        { "name": "prev_estimated_minutes", "type": "int" },
+        { "name": "replaced_at", "type": "timestamptz", "description": "수정이 일어난 시각" }
+      ]
+    },
+    {
+      "name": "todos",
+      "purpose": "계획에 딸린 할 일 한 건.",
+      "columns": [
+        { "name": "id", "type": "uuid", "primaryKey": true },
+        { "name": "plan_id", "type": "uuid", "references": "plans.id", "onDelete": "cascade" },
+        { "name": "title", "type": "text", "required": true },
+        { "name": "due_date", "type": "date", "required": true },
+        { "name": "priority", "type": "text", "required": true, "enum": ["high", "medium", "low"] },
+        { "name": "tags", "type": "text[]", "default": "{}" },
+        { "name": "estimated_minutes", "type": "int", "required": true, "constraint": ">= 0" },
+        { "name": "status", "type": "text", "default": "open", "enum": ["open", "done"] },
+        { "name": "completed_at", "type": "timestamptz", "nullable": true },
+        { "name": "created_at", "type": "timestamptz" },
+        { "name": "deleted_at", "type": "timestamptz", "nullable": true, "description": "소프트 삭제. 지운 할 일은 집계·목록에서 제외" }
+      ]
+    },
+    {
+      "name": "execution_logs",
+      "purpose": "실제로 언제 시작해서 얼마나 걸렸고 어디서 막혔는지. 계획(plans/todos)의 예상값은 절대 덮어쓰지 않는다.",
+      "columns": [
+        { "name": "id", "type": "uuid", "primaryKey": true },
+        { "name": "todo_id", "type": "uuid", "references": "todos.id", "onDelete": "cascade" },
+        { "name": "started_at", "type": "timestamptz", "required": true },
+        { "name": "ended_at", "type": "timestamptz", "required": true },
+        { "name": "actual_minutes", "type": "int", "required": true, "constraint": ">= 0" },
+        { "name": "blocked_reason", "type": "text", "nullable": true },
+        { "name": "created_at", "type": "timestamptz" }
+      ]
+    },
+    {
+      "name": "retrospective_notes",
+      "purpose": "돌아보기에서 정한, 다음 계획으로 넘길 한 줄.",
+      "columns": [
+        { "name": "id", "type": "uuid", "primaryKey": true },
+        { "name": "plan_id", "type": "uuid", "references": "plans.id", "onDelete": "cascade" },
+        { "name": "note", "type": "text", "required": true },
+        { "name": "created_at", "type": "timestamptz" }
+      ]
+    }
+  ],
+  "relations": [
+    { "from": "plan_revisions.plan_id", "to": "plans.id", "type": "many-to-one" },
+    { "from": "todos.plan_id", "to": "plans.id", "type": "many-to-one" },
+    { "from": "execution_logs.todo_id", "to": "todos.id", "type": "many-to-one" },
+    { "from": "retrospective_notes.plan_id", "to": "plans.id", "type": "many-to-one" },
+    { "from": "plans.carried_note_id", "to": "retrospective_notes.id", "type": "many-to-one", "nullable": true }
+  ],
+  "rpcFunctions": [
+    {
+      "name": "complete_todo",
+      "args": ["p_todo_id uuid", "p_started_at timestamptz", "p_ended_at timestamptz", "p_actual_minutes int", "p_blocked_reason text default null"],
+      "purpose": "멱등 완료 처리. status가 이미 done이면 UPDATE 자체가 0행이라 execution_logs도 늘지 않는다 — 연달아 두 번 호출해도 완료 기록·집계가 한 번만 늘어남을 DB 제약으로 보장.",
+      "returns": "todo_id uuid, execution_log_id uuid, newly_completed boolean"
+    },
+    {
+      "name": "reopen_todo",
+      "args": ["p_todo_id uuid"],
+      "purpose": "완료 상태를 진행 중으로 되돌린다.",
+      "returns": "void"
+    }
+  ],
+  "security": {
+    "auth": "none (no login) — RLS enabled on all tables, anon role granted explicit SELECT/INSERT/UPDATE (todos also DELETE)",
+    "secrets": "SUPABASE_ANON_KEY만 프론트에 사용. service_role 키는 어디에도 입력·저장하지 않는다 — anon key는 Supabase 설계상 공개 키이며 실제 접근 제어는 RLS 정책이 담당한다."
+  }
+}

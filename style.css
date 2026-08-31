@@ -497,7 +497,7 @@ td button {
 }
 
 .calendar-day.today {
-  border: 2px solid var(--today-bg);
+  box-shadow: inset 0 0 0 2px var(--today-bg);
 }
 
 .calendar-day.today .day-number {
@@ -658,4 +658,467 @@ tr.is-important {
 .detail-list dd {
   margin: 0;
   word-break: break-word;
+}
+
+/* ===== Plan-Do-See 추가 화면 — 위 습관 기록기와 같은 색상 변수·폰트를 그대로 쓴다 ===== */
+
+.mode-switcher {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 1080px;
+  margin: 1.5rem auto 0;
+  padding: 0 1.5rem;
+}
+
+.mode-btn {
+  font-family: inherit;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.mode-btn:hover {
+  background: var(--hover);
+}
+
+.mode-btn.is-active {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+  border-color: var(--accent-bg);
+  font-weight: 600;
+}
+
+#pds-app,
+#habit-app {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.5rem 2rem;
+}
+
+#pds-app .app-header {
+  padding: 1.25rem 0 0.75rem;
+  border-bottom: 1px solid var(--panel-border);
+  margin-bottom: 0.5rem;
+}
+
+#pds-app .app-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.4rem;
+}
+
+#pds-app .login-notice {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 107, 107, 0.12);
+  border: 1px solid var(--danger);
+  border-radius: 6px;
+  color: var(--danger);
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+#pds-app .tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--panel-border);
+  margin-bottom: 1rem;
+}
+
+#pds-app .tab-btn {
+  border: none;
+  background: transparent;
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+}
+
+#pds-app .tab-btn.is-active {
+  color: var(--text);
+  border-bottom-color: var(--accent-bg);
+  font-weight: 600;
+}
+
+#pds-app .tab-panel {
+  display: none;
+}
+
+#pds-app .tab-panel.is-active {
+  display: block;
+}
+
+#pds-app .two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 860px) {
+  #pds-app .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+#pds-app h2 {
+  font-size: 1rem;
+  margin: 1rem 0 0.5rem;
+}
+
+#pds-app h3 {
+  font-size: 0.85rem;
+  margin: 1rem 0 0.4rem;
+  color: var(--text-muted);
+}
+
+#pds-app .form-grid {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  max-width: none;
+}
+
+#pds-app .form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+#pds-app .form-grid input,
+#pds-app .form-grid select {
+  font-family: inherit;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background: var(--input-bg);
+  color: var(--text);
+}
+
+#pds-app .form-grid button,
+#pds-app .actions button {
+  font-family: inherit;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--input-bg);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.8rem;
+  width: fit-content;
+}
+
+#pds-app .form-grid button:hover,
+#pds-app .actions button:hover {
+  background: var(--hover);
+}
+
+#pds-app .form-grid button[type="submit"] {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+  border-color: var(--accent-bg);
+  font-weight: 600;
+}
+
+#pds-app .req {
+  color: var(--danger);
+}
+
+#pds-app .form-error {
+  color: var(--danger);
+  font-size: 0.8rem;
+  margin: 0.25rem 0 0.6rem;
+}
+
+#pds-app .item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#pds-app .list-item {
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  background: var(--panel);
+}
+
+#pds-app .list-item.is-selected {
+  border-color: var(--accent-bg);
+  background: var(--hover);
+}
+
+#pds-app .list-item-btn {
+  all: unset;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
+
+#pds-app .muted {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+#pds-app .meta {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin-top: 0.15rem;
+}
+
+#pds-app .detail-box {
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 0.75rem;
+  background: var(--panel);
+}
+
+#pds-app .plan-context {
+  padding: 0.5rem 0.75rem;
+  background: var(--input-bg);
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+}
+
+#pds-app .toolbar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0.75rem 0 0.25rem;
+}
+
+#pds-app .toolbar input,
+#pds-app .toolbar select {
+  font-family: inherit;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+#pds-app .sort-rule-note {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin: 0 0 0.6rem;
+}
+
+#pds-app .todo-item .todo-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#pds-app .done-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+#pds-app .badge {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--input-bg);
+  color: var(--text-muted);
+}
+
+#pds-app .badge-done {
+  color: #7fe0a5;
+  border: 1px solid #7fe0a5;
+}
+
+#pds-app .badge-overdue {
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+#pds-app .actions {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+#pds-app .actions button {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+}
+
+#pds-app .inline-form {
+  margin-top: 0.6rem;
+  padding: 0.6rem;
+  background: var(--input-bg);
+  border-radius: 4px;
+}
+
+#pds-app .execution-log-box {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--panel-border);
+}
+
+#pds-app .table-scroll {
+  overflow-x: auto;
+}
+
+#pds-app .retro-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+#pds-app .retro-table th,
+#pds-app .retro-table td {
+  border: 1px solid var(--panel-border);
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#pds-app .num-btn {
+  all: unset;
+  cursor: pointer;
+  color: var(--accent-bg);
+  font-weight: 700;
+}
+
+#pds-app .num-btn:hover {
+  text-decoration: underline;
+}
+
+#pds-app .drilldown {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--accent-bg);
+  border-radius: 6px;
+  background: var(--hover);
+}
+
+#pds-app .app-footer {
+  padding: 1rem 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+#pds-app .app-footer button {
+  font-family: inherit;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--accent-bg);
+  background: var(--accent-bg);
+  color: var(--accent-text);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* 할 일 캘린더 칩 — 그리드·칩 기본 모양은 위 습관 기록기의 .calendar-*, .day-record-item을 그대로 쓰고
+   여기서는 할 일 특유의 우선순위·상태 색만 얹는다. */
+#pds-app .todo-cal-item.priority-high {
+  border-color: #ff6b6b;
+  color: #ff9a9a;
+}
+
+#pds-app .todo-cal-item.priority-medium {
+  border-color: #e0b34d;
+  color: #e8c983;
+}
+
+#pds-app .todo-cal-item.priority-low {
+  border-color: #6ea8d8;
+  color: #a9cced;
+}
+
+#pds-app .todo-cal-item.status-done {
+  text-decoration: line-through;
+  color: var(--text-muted);
+  border-color: var(--panel-border);
+}
+
+#pds-app .todo-cal-item.status-overdue {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.35);
+}
+
+#pds-app .plan-strip,
+#pds-app .plan-strip-placeholder {
+  height: 1.05rem;
+  margin: 0.15rem -0.35rem 0;
+  box-sizing: border-box;
+}
+
+#pds-app .plan-strip {
+  background: var(--input-bg);
+  color: var(--plan-text, #f2f2f2);
+  border-top: 1px solid var(--plan-border, #8a8a8f);
+  border-bottom: 1px solid var(--plan-border, #8a8a8f);
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 0.95rem;
+  padding: 0 0.3rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#pds-app .plan-strip:hover {
+  filter: brightness(1.25);
+}
+
+#pds-app .plan-strip.is-start {
+  margin-left: 0;
+  border-left: 1px solid var(--plan-border, #8a8a8f);
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+#pds-app .plan-strip.is-end {
+  margin-right: 0;
+  border-right: 1px solid var(--plan-border, #8a8a8f);
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+#pds-app .plan-strip-placeholder {
+  visibility: hidden;
+}
+
+/* 옛 습관 기록기에서는 "오늘" 칸의 날짜 숫자가 더 큰 원형 배지(1.9em)라서, 그 아래
+   내용이 다른 칸보다 밀려 내려간다. 계획 막대가 칸을 넘나들며 줄이 맞아야 하므로
+   PDS 캘린더에서만 오늘 배지 높이를 평소 날짜 숫자와 같게 맞춘다. */
+#pds-app .day-number {
+  display: inline-flex;
+  align-items: center;
+  height: 1.35rem;
+  box-sizing: border-box;
+}
+
+#pds-app .calendar-day.today .day-number {
+  height: 1.35rem;
+  min-width: 1.35rem;
+}
+
+.calendar-overview {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 0;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.calendar-overview h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
 }
