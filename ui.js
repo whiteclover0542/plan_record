@@ -10,6 +10,7 @@ const tagsField = document.getElementById("field-tags");
 const memoField = document.getElementById("field-memo");
 const borderColorField = document.getElementById("field-border-color");
 const textColorField = document.getElementById("field-text-color");
+const boldField = document.getElementById("field-bold");
 const errorEl = document.getElementById("form-error");
 const tbody = document.getElementById("record-tbody");
 const emptyMsg = document.getElementById("empty-msg");
@@ -123,6 +124,7 @@ function enterEditMode(record) {
   memoField.value = record.memo || "";
   borderColorField.value = record.color?.border || "#ffffff";
   textColorField.value = record.color?.text || "#ffffff";
+  boldField.checked = Boolean(record.bold);
   formTitle.textContent = "기록 수정";
   submitBtn.textContent = "저장";
   cancelEditBtn.hidden = false;
@@ -199,12 +201,14 @@ function renderTable(records) {
   for (const r of records) {
     const tr = document.createElement("tr");
     tr.style.color = r.color?.text || "#ffffff";
+    if (r.bold) tr.classList.add("is-important");
 
-    const cells = [r.date, r.item, r.value, r.unit, (r.tags || []).join(", "), r.memo || ""];
+    const itemLabel = r.bold ? `★ ${r.item}` : r.item;
+    const cells = [r.date, itemLabel, r.value, r.unit, (r.tags || []).join(", "), r.memo || ""];
     cells.forEach((text, i) => {
       const td = document.createElement("td");
       td.textContent = text;
-      if (i === 0) td.style.borderLeft = `3px solid ${r.color?.border || "#ffffff"}`;
+      if (i === 0) td.style.borderLeft = `${r.bold ? 5 : 3}px solid ${r.color?.border || "#ffffff"}`;
       tr.appendChild(td);
     });
 
@@ -337,8 +341,10 @@ function renderCalendar(records) {
     for (const r of dayRecordList) {
       const item = document.createElement("div");
       item.className = "day-record-item";
+      if (r.bold) item.classList.add("is-important");
       const hasValue = !isBlank(r.value) || !isBlank(r.unit);
-      item.textContent = hasValue ? `${r.item} · ${r.value}${r.unit}` : r.item;
+      const label = hasValue ? `${r.item} · ${r.value}${r.unit}` : r.item;
+      item.textContent = r.bold ? `★ ${label}` : label;
       item.title = item.textContent;
       item.style.borderColor = r.color?.border || "#ffffff";
       item.style.color = r.color?.text || "#ffffff";
@@ -454,6 +460,7 @@ form.addEventListener("submit", (e) => {
     tags: tagsField.value,
     memo: memoField.value,
     color: { border: borderColorField.value, text: textColorField.value },
+    bold: boldField.checked,
   };
 
   try {

@@ -192,7 +192,7 @@ const Records = {
     return Storage.load();
   },
 
-  create({ date, item, value, unit, memo, tags, color }) {
+  create({ date, item, value, unit, memo, tags, color, bold }) {
     const error = validateRecordInput({ date, item, value, unit });
     if (error) throw new Error(error);
 
@@ -206,6 +206,7 @@ const Records = {
       memo: memo ? String(memo).trim() : "",
       tags: normalizeTags(tags),
       color: normalizeColor(color),
+      bold: Boolean(bold),
       schemaVersion: CURRENT_SCHEMA_VERSION,
     };
 
@@ -228,6 +229,7 @@ const Records = {
     merged.unit = isBlank(merged.unit) ? "" : String(merged.unit).trim();
     merged.tags = normalizeTags(patch.tags !== undefined ? patch.tags : merged.tags);
     merged.color = normalizeColor(patch.color !== undefined ? patch.color : merged.color);
+    merged.bold = Boolean(patch.bold !== undefined ? patch.bold : merged.bold);
     records[index] = merged;
     Storage.save(records);
     return merged;
@@ -301,6 +303,7 @@ const ImportExport = {
       memo: r.memo ? String(r.memo).trim() : "",
       tags: normalizeTags(r.tags),
       color: normalizeColor(r.color),
+      bold: Boolean(r.bold),
       schemaVersion: r.schemaVersion || 1,
     }));
 

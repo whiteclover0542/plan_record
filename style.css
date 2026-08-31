@@ -241,6 +241,13 @@ header .sub {
   cursor: pointer;
 }
 
+.bold-toggle-label {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+}
+
 form label {
   display: flex;
   flex-direction: column;
@@ -544,6 +551,17 @@ td button {
 
 .day-record-item:hover {
   background: var(--hover);
+}
+
+.day-record-item.is-important,
+tr.is-important {
+  font-weight: bold;
+  -webkit-text-stroke: 0.4px currentColor;
+}
+
+.day-record-item.is-important {
+  border-width: 2px;
+  box-shadow: 0 0 0 1px rgba(255, 214, 51, 0.35);
 }
 
 .day-checklist-item {
