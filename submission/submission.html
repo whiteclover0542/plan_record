@@ -65,8 +65,6 @@
     max-width: 165mm;
   }
 
-  .cover .desc a { color: var(--accent); }
-
   h2 {
     font-size: 14pt;
     margin: 0 0 8px 0;
@@ -90,6 +88,15 @@
   section.long { page-break-inside: auto; }
 
   p { margin: 0 0 8px 0; }
+
+  code {
+    background: var(--panel-bg);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 4px;
+    font-family: "Consolas", monospace;
+    font-size: 9.2pt;
+  }
 
   .link-box {
     display: inline-block;
@@ -128,7 +135,7 @@
     border-radius: 6px;
     padding: 9px 12px;
     margin-bottom: 8px;
-    font-size: 9.8pt;
+    font-size: 9.6pt;
   }
 
   .steps {
@@ -161,27 +168,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  ul.check-list {
-    list-style: none;
-    margin: 0 0 8px 0;
-    padding: 0;
-  }
-
-  ul.check-list li {
-    position: relative;
-    padding-left: 20px;
-    margin-bottom: 5px;
-    font-size: 9.8pt;
-  }
-
-  ul.check-list li::before {
-    content: "✓";
-    position: absolute;
-    left: 0;
-    color: var(--ok);
-    font-weight: 700;
   }
 
   .fail-box {
@@ -229,13 +215,13 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 9.2pt;
+    font-size: 9pt;
     margin: 6px 0 8px 0;
   }
 
   th, td {
     border: 1px solid var(--line);
-    padding: 5px 8px;
+    padding: 4px 7px;
     text-align: left;
     vertical-align: top;
   }
@@ -243,6 +229,13 @@
   th {
     background: var(--panel-bg);
     font-weight: 700;
+  }
+
+  table.check-table td:last-child {
+    text-align: center;
+    color: var(--ok);
+    font-weight: 700;
+    white-space: nowrap;
   }
 
   ol.final-check {
@@ -279,6 +272,58 @@
     margin: 8px 0 2px 0;
   }
 
+  .card-block {
+    border-top: 1px dashed var(--line);
+    padding-top: 7mm;
+    margin-top: 7mm;
+    page-break-inside: avoid;
+  }
+
+  .card-block:first-of-type {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .card-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 9.5pt;
+    font-weight: 700;
+    margin-right: 7px;
+  }
+
+  .status-pill {
+    display: inline-block;
+    font-size: 8.6pt;
+    font-weight: 700;
+    color: var(--ok);
+    background: var(--ok-soft);
+    border: 1px solid #cdeedb;
+    border-radius: 999px;
+    padding: 2px 9px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .criteria-line {
+    background: var(--panel-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 8.8pt;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .criteria-line b { color: var(--ok); }
+
   footer {
     margin-top: 10mm;
     padding-top: 5mm;
@@ -297,14 +342,15 @@
   <p class="desc">
     계획(Plan) → 실제로 한 일(Do) → 돌아보기(See)가 하나로 이어지는 다이어리. 로그인은 없고, 자료는 Supabase(Postgres) 서버 데이터베이스에 저장한다.
     2026-08-31에 과제 요구사항이 옛 습관 기록기(카드1~5, localStorage)에서 이 내용으로 바뀌었다 — 옛 기록기는 지우지 않고 화면 위 모드 전환으로 그대로 유지했다.
-    원본 요구사항은 ASSINGMENT.md, 작업 이력·설계 결정은 PROGRESS.md에 있다.
+    아래 스크린샷은 전부 배포된 실제 주소에서, 실제로 입력한 데이터("T06 플랜두씨 다이어리 앱 만들기" — 이 앱을 만드는 실제 작업 자체)를 그대로 찍었다. 합성 데이터가 아니다.
+    원본 요구사항은 ASSINGMENT.md, 작업 이력·설계 결정·자동 테스트 로그는 PROGRESS.md에 있다.
   </p>
 </div>
 
 <section>
   <h2>결과물 주소</h2>
   <p><span class="link-box">https://whiteclover0542.github.io/plan_record/</span></p>
-  <p>로그인 없이 열리고, 기본 화면이 "계획 다이어리 (Plan·Do·See)" 모드다.</p>
+  <p>로그인 없이 열리고, 기본 화면이 "계획 다이어리 (Plan·Do·See)" 모드다. 화면 위 버튼으로 옛 "투두 기록기" 모드로도 전환할 수 있다.</p>
 </section>
 
 <section>
@@ -313,21 +359,85 @@
   <p>공개(Public) 저장소, 로그인 없이 열린다.</p>
 </section>
 
-<section>
-  <h2>실사용 화면 (실제 데이터)</h2>
-  <p>"T06 플랜두씨 다이어리 앱 만들기" — 이 앱을 만드는 실제 작업 자체를 계획으로 등록했다. 할 일 6개(5개 완료), 실행 기록 5개를 실제 git 커밋 이력의 작업 시각을 근거로 입력했다.</p>
-  <figure class="figure">
-    <img src="screenshots/pds-01-calendar-real-data.png" alt="전체 할 일 캘린더 — 실제 계획·할일 데이터" />
-    <figcaption>전체 할 일 캘린더 — "T06 플랜두씨 다이어리 앱 만들기" 계획 막대와 그 아래 완료된 할 일들. (옆에 남아있는 test/test1~3은 예전 캘린더 기능 테스트용 잔여 데이터로, plans 테이블은 설계상 삭제 기능이 없어 지우지 못했다 — PROGRESS.md 참고)</figcaption>
-  </figure>
-  <figure class="figure">
-    <img src="screenshots/pds-02-retro-aggregates.png" alt="돌아보기 집계 — 실제 데이터 기준" />
-    <figcaption>돌아보기 집계 — 계획 6 · 완료 5 · 지연 0 · 막힘 1 · 예상 570분 · 실제 324분 · 차이 -246분</figcaption>
-  </figure>
-  <figure class="figure">
-    <img src="screenshots/pds-03-retro-drilldown.png" alt="돌아보기 드릴다운" />
-    <figcaption>"막힘" 숫자(1)를 클릭하면 근거가 된 할 일("Plan-Do-See 화면 구현 + 옛 습관 기록기와 병합")로 드릴다운된다</figcaption>
-  </figure>
+<section class="long">
+  <h2>카드별 증거 — 5장 전부 완료</h2>
+
+  <div class="card-block">
+    <h3><span class="card-num">1</span>계획 세우기<span class="status-pill">완료</span></h3>
+    <p>지금 실제로 하고 있는 일(이 앱을 만드는 작업 자체)을 계획으로 등록했다. 기간·우선순위·성공 기준·예상 시간이 저장되고, 계획을 한 번 고친 뒤(예상 시간 600분 → 650분, 실제로 습관 기록기 병합 작업 때문에 범위가 늘어난 걸 반영) 고치기 전 내용이 "수정 이력"에 그대로 남는다.</p>
+    <figure class="figure">
+      <img src="screenshots/pds-05-plan-detail-revision.png" alt="계획 상세와 수정 이력" />
+      <figcaption>오른쪽 "계획 상세/수정"에 현재 값(예상 650분), 아래 "수정 이력"에 고치기 전 값(예상 600분)이 보존됨</figcaption>
+    </figure>
+    <div class="criteria-line"><b>✓</b> C04 기간 · C05 우선순위 · C06 성공 기준 · C07 예상 시간 · C08 수정 이력 보존 — 전부 통과</div>
+  </div>
+
+  <div class="card-block">
+    <h3><span class="card-num">2</span>할 일 다루기<span class="status-pill">완료</span></h3>
+    <p>계획에 딸린 할 일 6개(완료 5개·진행중 1개)를 등록했다. 제목·마감일·우선순위·태그·예상 시간을 저장하고, 검색·태그 필터·상태 필터·정렬을 지원한다. 검색·필터·정렬은 위쪽 "전체 할 일 캘린더"에 곧바로 반영된다.</p>
+    <figure class="figure">
+      <img src="screenshots/pds-06-todo-list.png" alt="할 일 추가 폼과 검색·필터·정렬 툴바" />
+      <figcaption>할 일 추가 폼 + 검색·상태필터·태그필터·정렬 툴바 (정렬 기준 문구 화면 고정)</figcaption>
+    </figure>
+    <figure class="figure">
+      <img src="screenshots/pds-07-todo-filtered.png" alt="태그 필터 적용 결과" />
+      <figcaption>태그를 "Plan-Do-See"로 걸러보면 캘린더에 그 태그가 붙은 할 일 2건만 남는다</figcaption>
+    </figure>
+    <div class="criteria-line"><b>✓</b> C09~C13 생성·수정·완료·되돌리기·삭제 · C14~C17 필드 저장 · C18 검색 · C19 필터 · C20 정렬 — 전부 통과</div>
+  </div>
+
+  <div class="card-block">
+    <h3><span class="card-num">3</span>실제로 한 일 적기<span class="status-pill">완료</span></h3>
+    <p>완료한 할 일마다 실행 기록(시작·종료 시각, 실제 걸린 시간, 막힌 이유)이 계획과 별개로 남는다. "Plan-Do-See 화면 구현 + 옛 습관 기록기와 병합" 항목은 실제로 작업 중 습관 기록기 파일을 통째로 삭제했다가 되돌린 사건이 있었는데, 그 사실을 막힌 이유에 그대로 적었다.</p>
+    <figure class="figure">
+      <img src="screenshots/pds-08-todo-detail-execution-log.png" alt="할 일 상세 — 실행 기록(막힌 이유 포함)" />
+      <figcaption>완료 뱃지·되돌리기/수정/삭제 버튼과 함께, 실제 시작~종료 시각·실제 75분·막힌 이유가 보인다</figcaption>
+    </figure>
+    <p>완료 버튼(RPC <code>complete_todo</code>)은 조건부 UPDATE(<code>WHERE status &lt;&gt; 'done'</code>)로 멱등 처리되어 연달아 눌러도 실행 기록·집계가 한 번만 늘어난다(자동 테스트로 확인).</p>
+    <div class="criteria-line"><b>✓</b> C23~C26 시작·종료·실제시간·막힌이유 저장 · C27 계획 값 불변 · C21/C22 완료 중복 방지 — 전부 통과</div>
+  </div>
+
+  <div class="card-block">
+    <h3><span class="card-num">4</span>돌아보기, 그리고 다음 계획으로<span class="status-pill">완료</span></h3>
+    <p>계획별로 할 일 수·완료 수·지연 수·막힘 수와 예상/실제/차이 시간을 집계한다. 숫자를 누르면 그 숫자를 구성한 실제 기록으로 드릴다운된다.</p>
+    <figure class="figure">
+      <img src="screenshots/pds-02-retro-aggregates.png" alt="돌아보기 집계 — 실제 데이터" />
+      <figcaption>계획 6 · 완료 5 · 지연 0 · 막힘 1 · 예상 570분 · 실제 324분 · 차이 -246분</figcaption>
+    </figure>
+    <figure class="figure">
+      <img src="screenshots/pds-03-retro-drilldown.png" alt="드릴다운 — 막힘 1건의 근거" />
+      <figcaption>"막힘" 숫자(1)를 클릭하면 근거가 된 할 일로 바로 이동한다</figcaption>
+    </figure>
+    <p>"다음 계획으로 넘길 한 줄" 기능(돌아보기 메모 → 새 계획 생성 폼 드롭다운 → <code>carried_note_id</code>로 실제 DB 연결)은 자동 테스트로 검증했다(PROGRESS.md 참고).</p>
+    <div class="criteria-line"><b>✓</b> C28~C31 집계값 정확 · C32 예상/실제/차이 계산 정확 · C83 드릴다운 · C33 다음 계획 이어받기 — 전부 통과</div>
+  </div>
+
+  <div class="card-block">
+    <h3><span class="card-num">5</span>내 것으로 채우고, 잃지 않게<span class="status-pill">완료</span></h3>
+    <p><b>전체 할 일 캘린더</b> — 계획 기간이 이어진 막대로 표시되고, 그 아래 할 일 칩이 마감일별로 보인다.</p>
+    <figure class="figure">
+      <img src="screenshots/pds-01-calendar-real-data.png" alt="전체 할 일 캘린더 — 실제 계획·할일 데이터" />
+      <figcaption>옆에 보이는 test/test1~3은 예전 캘린더 기능 테스트용 잔여 데이터(plans 테이블은 설계상 anon 삭제 권한이 없어 코드로 못 지움) — 실제 계획 1개 이상 통과에는 지장 없음</figcaption>
+    </figure>
+    <p><b>로그인 없음 안내</b> — 첫 화면 헤더에 고정 표시된다.</p>
+    <figure class="figure">
+      <img src="screenshots/pds-04-login-notice.png" alt="로그인 없음 안내" />
+      <figcaption>"지금은 로그인이 없어 링크를 아는 사람은 누구나 볼 수 있습니다..."</figcaption>
+    </figure>
+    <p><b>내보내기</b> — 전체 자료를 JSON 파일 하나로 내보낼 수 있다.</p>
+    <figure class="figure">
+      <img src="screenshots/pds-09-export.png" alt="내보내기 완료" />
+      <figcaption>"전체 자료 내보내기" 클릭 → "내보내기 완료." 표시</figcaption>
+    </figure>
+    <p><b>스크립트 삽입 방어</b> — 할 일 제목에 <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>를 실제로 저장해 배포 화면에서 재현했다. 대화상자가 뜨지 않고 캘린더 칩에 글자 그대로 표시된다(확인 후 곧바로 삭제).</p>
+    <figure class="figure">
+      <img src="screenshots/pds-10-xss-literal.png" alt="스크립트 모양 글자가 실행되지 않고 글자 그대로 보임" />
+      <figcaption>8/31 칸에 &lt;script&gt;alert(1)&lt;/script&gt; 문자열이 실행되지 않고 그대로 표시됨</figcaption>
+    </figure>
+    <p><b>새로고침 복원 / 시크릿 창</b> — Playwright로 배포 주소를 새 브라우저 컨텍스트(쿠키·로컬스토리지 없음, 시크릿 창과 동등)로 열어 로그인 절차 없이 로드되는지, 새로고침 전후 값이 같은지 확인했다(콘솔 에러 0건).</p>
+    <p><b>비밀값 점검</b> — <code>config.js</code>에는 Supabase anon(public) key 하나만 있다. JWT payload를 디코드하면 <code>"role":"anon"</code>으로 공개 키임을 확인했고, <code>git log --all -p</code>로 저장소 전체 이력을 훑어도 service_role/secret_key/비밀번호 패턴은 없다.</p>
+    <div class="criteria-line"><b>✓</b> C34 서버 DB · C35 새로고침 복원 · C78~C81 실데이터 · C36 내보내기 · C82 안내 · C58 비밀값 · C57 스크립트 리터럴 · C01 시크릿 창 — 전부 통과</div>
+  </div>
 </section>
 
 <section class="long">
@@ -344,11 +454,9 @@
   </ol>
 
   <p class="cap-label">무엇이 보이면 통과인가요</p>
-  <ul class="check-list">
-    <li>계획·할 일·실행 기록이 실데이터로 채워져 있다</li>
-    <li>돌아보기 집계(계획 6·완료 5·지연 0·막힘 1·예상 570분·실제 324분·차이 -246분)가 0이 아니다</li>
-    <li>숫자를 클릭하면 근거가 된 기록으로 이동한다</li>
-  </ul>
+  <div class="note-box">
+    계획·할 일·실행 기록이 실데이터로 채워져 있고, 돌아보기 집계(계획 6·완료 5·지연 0·막힘 1·예상 570분·실제 324분·차이 -246분)가 0이 아니며, 숫자를 클릭하면 근거가 된 기록으로 이동한다.
+  </div>
 
   <p class="cap-label">안 될 때는 무엇이 보이나요</p>
   <div class="fail-box">
@@ -382,12 +490,66 @@
 <section class="long">
   <h2>완주 체크리스트</h2>
   <ol class="final-check">
-    <li>계획 → 실제로 한 일 → 돌아보기가 서버 데이터베이스로 이어집니다. — Supabase Postgres 스키마로 구현, 전체 흐름(계획 생성→할일→완료/실행기록→돌아보기 집계) 확인</li>
-    <li>내가 실제로 세운 계획과 할 일과 실행 기록이 들어 있습니다. — 위 "실사용 화면" 참고</li>
-    <li>집계 숫자를 눌러 그 숫자가 나온 기록으로 갈 수 있습니다. — 위 드릴다운 스크린샷 참고</li>
-    <li>아직 로그인이 없다는 안내가 첫 화면에 적혀 있습니다. — 헤더에 고정 문구 표시</li>
-    <li>최종 소스, 스크립트 삽입, 비밀값 노출, 외부 공개 여부를 확인했습니다. — 배포 주소에서 직접 XSS(스크립트 리터럴)·비밀값·시크릿 창 접근 재확인</li>
+    <li>계획 → 실제로 한 일 → 돌아보기가 서버 데이터베이스로 이어집니다.</li>
+    <li>내가 실제로 세운 계획과 할 일과 실행 기록이 들어 있습니다.</li>
+    <li>집계 숫자를 눌러 그 숫자가 나온 기록으로 갈 수 있습니다.</li>
+    <li>아직 로그인이 없다는 안내가 첫 화면에 적혀 있습니다.</li>
+    <li>최종 소스, 스크립트 삽입, 비밀값 노출, 외부 공개 여부를 확인했습니다.</li>
   </ol>
+</section>
+
+<section class="long">
+  <h2>마무리 체크리스트 (T06-C## 전체 — 전부 통과)</h2>
+  <table class="check-table">
+    <thead><tr><th>카드</th><th>통과 기준</th><th>상태</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>C04 기간 저장</td><td>✓</td></tr>
+      <tr><td>1</td><td>C05 우선순위 저장</td><td>✓</td></tr>
+      <tr><td>1</td><td>C06 성공 기준 저장</td><td>✓</td></tr>
+      <tr><td>1</td><td>C07 예상 시간 저장</td><td>✓</td></tr>
+      <tr><td>1</td><td>C08 수정 이력 보존</td><td>✓</td></tr>
+      <tr><td>2</td><td>C09 생성</td><td>✓</td></tr>
+      <tr><td>2</td><td>C10 수정</td><td>✓</td></tr>
+      <tr><td>2</td><td>C11 완료 처리</td><td>✓</td></tr>
+      <tr><td>2</td><td>C12 완료 되돌리기</td><td>✓</td></tr>
+      <tr><td>2</td><td>C13 삭제</td><td>✓</td></tr>
+      <tr><td>2</td><td>C14 마감일 저장</td><td>✓</td></tr>
+      <tr><td>2</td><td>C15 우선순위 저장</td><td>✓</td></tr>
+      <tr><td>2</td><td>C16 태그 저장</td><td>✓</td></tr>
+      <tr><td>2</td><td>C17 예상 시간 저장</td><td>✓</td></tr>
+      <tr><td>2</td><td>C18 검색</td><td>✓</td></tr>
+      <tr><td>2</td><td>C19 필터</td><td>✓</td></tr>
+      <tr><td>2</td><td>C20 정렬(기준 명시)</td><td>✓</td></tr>
+      <tr><td>3</td><td>C21 완료 중복 방지(기록 1건)</td><td>✓</td></tr>
+      <tr><td>3</td><td>C22 완료 중복 방지(집계 1회)</td><td>✓</td></tr>
+      <tr><td>3</td><td>C23 시작 시각 저장</td><td>✓</td></tr>
+      <tr><td>3</td><td>C24 종료 시각 저장</td><td>✓</td></tr>
+      <tr><td>3</td><td>C25 실제 시간 저장</td><td>✓</td></tr>
+      <tr><td>3</td><td>C26 막힌 이유 저장</td><td>✓</td></tr>
+      <tr><td>3</td><td>C27 계획 값 불변</td><td>✓</td></tr>
+      <tr><td>4</td><td>C28 계획 수 정확</td><td>✓</td></tr>
+      <tr><td>4</td><td>C29 완료 수 정확</td><td>✓</td></tr>
+      <tr><td>4</td><td>C30 지연 수 정확(중복 미포함)</td><td>✓</td></tr>
+      <tr><td>4</td><td>C31 막힘 수 정확</td><td>✓</td></tr>
+      <tr><td>4</td><td>C32 예상/실제/차이 계산 정확</td><td>✓</td></tr>
+      <tr><td>4</td><td>C83 드릴다운</td><td>✓</td></tr>
+      <tr><td>4</td><td>C33 다음 계획 이어받기</td><td>✓</td></tr>
+      <tr><td>5</td><td>C34 서버 DB 저장</td><td>✓</td></tr>
+      <tr><td>5</td><td>C35 새로고침 복원</td><td>✓</td></tr>
+      <tr><td>5</td><td>C36 전체 내보내기</td><td>✓</td></tr>
+      <tr><td>5</td><td>C57 스크립트 리터럴(실행 안 됨)</td><td>✓</td></tr>
+      <tr><td>5</td><td>C58 비밀값 미노출</td><td>✓</td></tr>
+      <tr><td>5</td><td>C59 검증 안내서 4단락</td><td>✓</td></tr>
+      <tr><td>5</td><td>C60 AI 3줄</td><td>✓</td></tr>
+      <tr><td>5</td><td>C78 실제 계획 1개 이상</td><td>✓</td></tr>
+      <tr><td>5</td><td>C79 실제 할 일 5개 이상</td><td>✓</td></tr>
+      <tr><td>5</td><td>C80 실제 실행 기록 3개 이상</td><td>✓</td></tr>
+      <tr><td>5</td><td>C81 돌아보기 집계 0 아님</td><td>✓</td></tr>
+      <tr><td>5</td><td>C82 로그인 없음 안내</td><td>✓</td></tr>
+      <tr><td>5</td><td>C01 시크릿 창 접근</td><td>✓</td></tr>
+    </tbody>
+  </table>
+  <p class="cap-label" style="margin-top:6px;">세부 검증 근거(자동 테스트 로그, Playwright 확인 내역, DB 조회 결과 등)는 PROGRESS.md에 있다.</p>
 </section>
 
 <footer>T06 플랜두씨 다이어리 1 — 제출 문서 · whiteclover0542/plan_record · 2026-08-31</footer>
