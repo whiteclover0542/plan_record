@@ -4,6 +4,18 @@
 
 **공개 주소**: https://whiteclover0542.github.io/plan_record/
 
+## 미리보기
+
+캘린더 뷰
+
+![캘린더 뷰](submission/screenshots/card5-03-actual-5day-calendar.png)
+
+테이블 뷰 (전체 목록 + 체크리스트)
+
+![테이블 뷰](submission/screenshots/card5-04-actual-5day-table.png)
+
+> 위 화면은 전부 `test` 태그를 붙인 합성(가상) 데이터다. 더 많은 스크린샷은 [SUBMISSION.md](SUBMISSION.md) 참고.
+
 ## 주요 기능
 
 - 기록 생성·조회·수정·삭제 (고유 ID 기준, 캘린더/테이블 뷰)
