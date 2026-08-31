@@ -11,9 +11,9 @@ https://whiteclover0542.github.io/plan_record/
 
 ## 소스 주소
 
-https://github.com/whiteclover0542/plan_record
+https://github.com/whiteclover0542/plan_record/tree/860a65e573b25311e0346ef532e2bff359e7f885
 
-공개(Public) 저장소, 로그인 없이 열린다.
+브랜치·저장소 첫 화면이 아니라, 이 커밋(전체 40자리 소문자 SHA) 시점의 소스 상태를 그대로 가리키는 고정 URL이다. 공개(Public) 저장소, 로그인 없이 열린다.
 
 ---
 
