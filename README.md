@@ -2,7 +2,9 @@
 
 계획(Plan) → 실제로 한 일(Do) → 돌아보기(See)가 하나로 이어지는 다이어리. 화면 위 모드 전환 버튼으로 두 기능을 오간다.
 
-- **계획 다이어리 (Plan·Do·See)** — 기본 화면. 계획·할 일·실행 기록·돌아보기를 Supabase(Postgres) 서버 데이터베이스에 저장한다. 로그인이 없어 링크를 아는 사람은 누구나 볼 수 있다.
+> ⏳ **T07 진행 중 (2026-09-01~)**: T06(로그인 없는 버전)에 이어 Supabase Auth로 로그인을 붙이는 중이다. 첫 화면이 로그인 화면으로 바뀌고, 계획 다이어리의 자료는 로그인한 계정에만 보인다. DB 마이그레이션(`supabase/migration-t07-auth.sql`) 적용 전까지는 배포 화면에 반영하지 않는다 — 자세한 진행 상황은 [PROGRESS.md](PROGRESS.md), 과제 원문은 [ASSINGMENT.md](ASSINGMENT.md), T06 문서 전체는 [archive/t06/](archive/t06/) 참고.
+
+- **계획 다이어리 (Plan·Do·See)** — 기본 화면. 계획·할 일·실행 기록·돌아보기를 Supabase(Postgres) 서버 데이터베이스에 저장한다. (T07 적용 후) 로그인한 계정에만 보이고, Row Level Security로 다른 계정의 자료는 서버에서부터 막힌다.
 - **투두 기록기** — 예전 카드1~5 과제로 만든 개인 습관 기록기. 백엔드 없이 `localStorage`만으로 동작하며, 합성(가상) 데이터만 사용하는 원칙을 그대로 유지한다.
 
 **공개 주소**: https://whiteclover0542.github.io/plan_record/

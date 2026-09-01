@@ -713,12 +713,103 @@ tr.is-important {
 #pds-app .login-notice {
   margin: 0;
   padding: 0.5rem 0.75rem;
-  background: rgba(255, 107, 107, 0.12);
-  border: 1px solid var(--danger);
+  background: rgba(242, 242, 242, 0.08);
+  border: 1px solid var(--panel-border);
   border-radius: 6px;
-  color: var(--danger);
+  color: var(--text-muted);
   font-size: 0.8rem;
   display: inline-block;
+}
+
+/* ===== 로그인 게이트 (T07) ===== */
+
+#auth-gate {
+  max-width: 420px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+}
+
+.auth-card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.auth-card h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.auth-form h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.auth-form input {
+  font-family: inherit;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--text);
+}
+
+.auth-form button[type="submit"] {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+  border-color: var(--accent-bg);
+  font-weight: 600;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.mode-switcher-spacer {
+  flex: 1;
+}
+
+.current-user {
+  align-self: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.danger-btn {
+  border-color: var(--danger) !important;
+  color: var(--danger) !important;
+}
+
+#auth-gate .req {
+  color: var(--danger);
+}
+
+#auth-gate .muted {
+  color: var(--text-muted);
+  font-size: 0.8rem;
 }
 
 #pds-app .tabs {

@@ -914,7 +914,12 @@
   modeHabitBtn.addEventListener("click", () => setMode("habit"));
   modePdsBtn.addEventListener("click", () => setMode("pds"));
 
+  let started = false;
   async function init() {
+    // pds-auth.js가 로그인 확인 후 호출한다(T07) — 로그인 전에는 서버에 아무 권한도
+    // 없으므로(RLS), 여기서 미리 호출하지 않는다. 다시 호출돼도 tab/폼 초기화만
+    // 반복되고 목록은 새로 받아오므로 안전하다.
+    started = true;
     initTabs();
     setPlanFormDefaultDates();
     setTodoFormDefaultDate();
@@ -926,5 +931,5 @@
     }
   }
 
-  init();
+  window.PDS_UI = { start: init, isStarted: () => started };
 })();

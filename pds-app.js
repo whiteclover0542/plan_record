@@ -2,10 +2,13 @@
 // 옛 습관 기록기(app.js/checklist.js/ui.js)와 한 페이지에 공존하므로 전역 이름이
 // 겹치지 않도록 전부 IIFE 안에 두고 window.PDS에만 필요한 것을 내보낸다.
 (function () {
-  const sb = window.supabase.createClient(
+  // pds-auth.js도 같은 클라이언트를 써야 로그인 상태가 즉시 공유된다(별도 인스턴스를
+  // 두 개 만들면 한쪽에서 로그인해도 다른 쪽은 세션을 모른 채로 남을 수 있다).
+  window.PDS_SB = window.PDS_SB || window.supabase.createClient(
     window.PDS_CONFIG.SUPABASE_URL,
     window.PDS_CONFIG.SUPABASE_ANON_KEY
   );
+  const sb = window.PDS_SB;
 
   function todayInSeoul() {
     return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(new Date());
@@ -53,6 +56,35 @@
     if (error) throw new Error(error.message);
     return data;
   }
+
+  // ---------------------------------------------------------------------
+  // Auth (T07) — Supabase Auth(이메일+비밀번호). 세션은 supabase-js가 기본값인
+  // localStorage에 저장하고 만료·재발급을 알아서 처리한다. 이 앱 코드는 비밀번호를
+  // 직접 만지지 않고, 전부 이 래퍼를 통해 Supabase Auth REST API로 위임한다.
+  // ---------------------------------------------------------------------
+  const Auth = {
+    async signUp(email, password) {
+      return throwIfError(await sb.auth.signUp({ email, password }));
+    },
+    async signIn(email, password) {
+      return throwIfError(await sb.auth.signInWithPassword({ email, password }));
+    },
+    async signOut() {
+      const { error } = await sb.auth.signOut();
+      if (error) throw new Error(error.message);
+    },
+    async getSession() {
+      const { data, error } = await sb.auth.getSession();
+      if (error) throw new Error(error.message);
+      return data.session;
+    },
+    onAuthStateChange(cb) {
+      return sb.auth.onAuthStateChange((_event, session) => cb(session));
+    },
+    async deleteAccount() {
+      return throwIfError(await sb.rpc("delete_my_account"));
+    },
+  };
 
   // ---------------------------------------------------------------------
   // Plans
@@ -277,7 +309,7 @@
   };
 
   window.PDS = {
-    Plans, Todos, ExecutionLogs, RetroNotes, Aggregation,
+    Auth, Plans, Todos, ExecutionLogs, RetroNotes, Aggregation,
     sortTodos, filterTodos, ExportAll,
     todayInSeoul, formatSeoulDateTime, seoulWallClockToUtcIso, nowIsoInSeoulInput, parseTags,
   };

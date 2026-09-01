@@ -1,3 +1,6 @@
 # 내보내기(JSON) 백업을 실수로 이 폴더에 저장한 경우 대비
 *.private.json
 plandoc_records_*.json
+
+# VSCode Local History 확장 자동 백업 (편집기 로컬 전용, 저장소에 올릴 필요 없음)
+.history/
