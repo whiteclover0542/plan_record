@@ -106,6 +106,11 @@
         await sb.from("plans").update(input).eq("id", id).select().single()
       );
     },
+    async remove(id) {
+      // 계획을 지우면 그 계획에 딸린 할 일·실행 기록·수정 이력·돌아보기 메모도 전부 함께
+      // 지워진다(supabase/schema.sql의 on delete cascade). 되돌릴 수 없다.
+      return throwIfError(await sb.from("plans").delete().eq("id", id));
+    },
     async revisions(planId) {
       return throwIfError(
         await sb

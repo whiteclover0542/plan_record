@@ -198,9 +198,42 @@
       labeledInput("캘린더 막대 글자 색", "color_text", "color", plan.color_text || "#f2f2f2", false),
     ]);
     form.appendChild(colorRow);
-    form.appendChild(el("button", { type: "submit", text: "수정 저장" }));
+    form.appendChild(
+      el("div", { class: "actions" }, [
+        el("button", { type: "submit", text: "수정 저장" }),
+        el("button", {
+          type: "button",
+          text: "계획 삭제",
+          class: "danger-btn",
+          onclick: () => onDeletePlan(id),
+        }),
+      ])
+    );
     container.appendChild(form);
     container.appendChild(el("p", { class: "form-error", id: "plan-edit-error", hidden: "" }));
+  }
+
+  async function onDeletePlan(id) {
+    const plan = state.plans.find((p) => p.id === id);
+    const name = plan ? plan.title : "이 계획";
+    if (!confirm(`"${name}"을(를) 지우면 딸린 할 일·실행 기록·수정 이력·돌아보기 메모도 함께 지워집니다. 되돌릴 수 없습니다. 계속할까요?`)) {
+      return;
+    }
+    try {
+      await Plans.remove(id);
+      state.currentPlanId = null;
+      state.expandedTodoId = null;
+      state.completingTodoId = null;
+      state.editingTodoId = null;
+      await refreshPlans();
+      await refreshCalendarTodos();
+      renderPlanDetail(null);
+      document.getElementById("plan-revision-list").innerHTML = "";
+      renderTodoPlanContext();
+      renderRetroNoteContext();
+    } catch (err) {
+      reportError(err);
+    }
   }
 
   async function onPlanEditSubmit(e, id) {

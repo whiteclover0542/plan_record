@@ -64,13 +64,14 @@ python -m http.server 8000
 
 ## 문서
 
-- [ASSINGMENT.md](ASSINGMENT.md) — 과제 요구사항 원본(동결)
-- [PROGRESS.md](PROGRESS.md) — 진행 상태, 설계 결정 이력, 검증 안내서, AI 3줄
-- [card5-log.md](card5-log.md) — 5일 실사용 로그(날짜·완료 여부만, 실제 개인 기록 값은 비공개)
-- [SUBMISSION.md](SUBMISSION.md) / [submission/SUBMISSION.pdf](submission/SUBMISSION.pdf) — 결과물·소스 주소, 검증 안내서, AI 3줄을 담은 최종 제출 문서(옛 습관 기록기 카드별 증거는 git 이력에 보존)
+- [ASSINGMENT.md](ASSINGMENT.md) — T07 과제 요구사항 원본(동결)
+- [PROGRESS.md](PROGRESS.md) — T07 진행 상태, 설계 결정 이력, curl 테스트 근거, 검증 안내서/설명서 초안
+- [card5-log.md](card5-log.md) — T07 5일 실사용 로그(로그인한 계정 기준, 날짜·지표 값 위주, 개인 기록 원문은 비공개)
+- [archive/t06/](archive/t06/) — T06(로그인 없는 버전) 요구사항·진행 문서·최종 제출 문서 전체 보존
+- T07 최종 SUBMISSION 문서는 5일 로그·인증 구현 설명서 완료 후 작성 예정
 
 ## 개인정보·보안 원칙
 
-- 계획 다이어리(Plan·Do·See) 쪽에는 실제 내 계획·할 일·실행 기록을 넣는다. 아직 로그인이 없어 링크를 아는 사람은 누구나 볼 수 있으므로, 남이 봐도 괜찮은 내용만 넣는다.
+- 계획 다이어리(Plan·Do·See)는 이제 로그인이 걸려 있다 — 내 계획·할 일·실행 기록은 로그인한 내 계정에만 보이고, RLS가 서버에서 다른 계정의 접근을 막는다.
 - 투두 기록기 쪽은 예전 원칙대로 실제 개인 기록은 각자의 브라우저(`localStorage`)에만 남고, 이 저장소·공개 화면·제출 문서에는 합성(가상) 데이터만 사용한다.
-- 클라이언트 코드에는 Supabase anon(public) key만 있고 `service_role` 키 등 비밀값은 어디에도 없다.
+- 클라이언트 코드에는 Supabase anon(public) key만 있고 `service_role` 키 등 비밀값은 어디에도 없다. 로그인 세션(JWT)은 브라우저에만 저장되고, 제출 문서에 요청/응답 예시를 남길 때 토큰·비밀번호는 항상 가려서 적는다.
