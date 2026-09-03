@@ -21,10 +21,42 @@
         <input type="email" name="email" required autocomplete="email" />
       </label>
       <label>비밀번호 <span class="req">*</span>
-        <input type="password" name="password" required autocomplete="current-password" />
+        <div class="password-field">
+          <input type="password" name="password" required autocomplete="current-password" />
+          <button type="button" class="toggle-password-btn" aria-label="비밀번호 표시" aria-pressed="false">표시</button>
+        </div>
       </label>
       <button type="submit">로그인</button>
       <p class="muted">계정이 없으신가요? <button type="button" id="show-signup-btn" class="link-btn">가입하기</button></p>
+      <p class="muted"><button type="button" id="show-reset-request-btn" class="link-btn">비밀번호를 잊으셨나요?</button></p>
+    </form>
+
+    <form id="reset-request-form" class="auth-form" hidden>
+      <h2>비밀번호 재설정</h2>
+      <p class="muted">가입할 때 쓴 이메일로 재설정 링크를 보내드립니다.</p>
+      <label>이메일 <span class="req">*</span>
+        <input type="email" name="email" required autocomplete="email" />
+      </label>
+      <button type="submit">재설정 이메일 보내기</button>
+      <p class="muted"><button type="button" id="show-login-from-reset-btn" class="link-btn">로그인으로</button></p>
+    </form>
+
+    <form id="reset-password-form" class="auth-form" hidden>
+      <h2>새 비밀번호 설정</h2>
+      <p class="muted">이메일로 받은 링크로 들어오셨습니다. 새 비밀번호를 정해 주세요.</p>
+      <label>새 비밀번호 (8자 이상) <span class="req">*</span>
+        <div class="password-field">
+          <input type="password" name="password" required minlength="8" autocomplete="new-password" />
+          <button type="button" class="toggle-password-btn" aria-label="비밀번호 표시" aria-pressed="false">표시</button>
+        </div>
+      </label>
+      <label>새 비밀번호 확인 <span class="req">*</span>
+        <div class="password-field">
+          <input type="password" name="passwordConfirm" required minlength="8" autocomplete="new-password" />
+          <button type="button" class="toggle-password-btn" aria-label="비밀번호 표시" aria-pressed="false">표시</button>
+        </div>
+      </label>
+      <button type="submit">비밀번호 저장</button>
     </form>
 
     <form id="signup-form" class="auth-form" hidden>
@@ -33,7 +65,10 @@
         <input type="email" name="email" required autocomplete="email" />
       </label>
       <label>비밀번호 (8자 이상) <span class="req">*</span>
-        <input type="password" name="password" required minlength="8" autocomplete="new-password" />
+        <div class="password-field">
+          <input type="password" name="password" required minlength="8" autocomplete="new-password" />
+          <button type="button" class="toggle-password-btn" aria-label="비밀번호 표시" aria-pressed="false">표시</button>
+        </div>
       </label>
       <button type="submit">가입</button>
       <p class="muted">이미 계정이 있으신가요? <button type="button" id="show-login-btn" class="link-btn">로그인으로</button></p>

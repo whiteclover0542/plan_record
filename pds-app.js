@@ -79,10 +79,26 @@
       return data.session;
     },
     onAuthStateChange(cb) {
-      return sb.auth.onAuthStateChange((_event, session) => cb(session));
+      // event도 함께 넘긴다 — 비밀번호 재설정 링크로 들어왔을 때는 event가
+      // "PASSWORD_RECOVERY"로 와서 일반 로그인과 구분해야 한다.
+      return sb.auth.onAuthStateChange((event, session) => cb(event, session));
     },
     async deleteAccount() {
       return throwIfError(await sb.rpc("delete_my_account"));
+    },
+    // 비밀번호를 잊었을 때: 이메일로 재설정 링크를 보낸다. 링크를 눌러 이 페이지로
+    // 돌아오면 supabase-js가 URL의 복구 토큰을 자동으로 읽어 세션을 만들고
+    // onAuthStateChange에 "PASSWORD_RECOVERY" 이벤트를 보낸다.
+    async requestPasswordReset(email) {
+      const { error } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname,
+      });
+      if (error) throw new Error(error.message);
+    },
+    // PASSWORD_RECOVERY로 생긴 임시 세션 상태에서만 호출 가능 — 새 비밀번호로 바꾼다.
+    async updatePassword(newPassword) {
+      const { error } = await sb.auth.updateUser({ password: newPassword });
+      if (error) throw new Error(error.message);
     },
   };
 

@@ -11,8 +11,12 @@
 
   const loginForm = document.getElementById("login-form");
   const signupForm = document.getElementById("signup-form");
+  const resetRequestForm = document.getElementById("reset-request-form");
+  const resetPasswordForm = document.getElementById("reset-password-form");
   const showSignupBtn = document.getElementById("show-signup-btn");
   const showLoginBtn = document.getElementById("show-login-btn");
+  const showResetRequestBtn = document.getElementById("show-reset-request-btn");
+  const showLoginFromResetBtn = document.getElementById("show-login-from-reset-btn");
   const authError = document.getElementById("auth-error");
   const authNotice = document.getElementById("auth-notice");
   const currentUserEmailEl = document.getElementById("current-user-email");
@@ -38,9 +42,26 @@
     clearMessages();
     loginForm.hidden = which !== "login";
     signupForm.hidden = which !== "signup";
+    resetRequestForm.hidden = which !== "reset-request";
+    resetPasswordForm.hidden = which !== "reset-password";
   }
   showSignupBtn.addEventListener("click", () => toForm("signup"));
   showLoginBtn.addEventListener("click", () => toForm("login"));
+  showResetRequestBtn.addEventListener("click", () => toForm("reset-request"));
+  showLoginFromResetBtn.addEventListener("click", () => toForm("login"));
+
+  // 비밀번호 표시/숨김 토글 — 자동완성이 채운 값이 맞는지, 타이핑이 실제로
+  // 들어갔는지 눈으로 확인할 수 있게 한다. 기본은 숨김(type="password").
+  document.querySelectorAll("#auth-gate .toggle-password-btn").forEach((btn) => {
+    const input = btn.previousElementSibling;
+    btn.addEventListener("click", () => {
+      const showing = input.type === "text";
+      input.type = showing ? "password" : "text";
+      btn.textContent = showing ? "표시" : "숨김";
+      btn.setAttribute("aria-pressed", String(!showing));
+      btn.setAttribute("aria-label", showing ? "비밀번호 표시" : "비밀번호 숨김");
+    });
+  });
 
   function showApp(session) {
     authGate.hidden = true;
@@ -102,6 +123,41 @@
     }
   });
 
+  resetRequestForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearMessages();
+    const email = resetRequestForm.email.value.trim();
+    try {
+      await Auth.requestPasswordReset(email);
+      resetRequestForm.reset();
+      // 계정 존재 여부를 흘리지 않도록(T07-C99와 같은 원칙) 있든 없든 같은 문구를 보여준다.
+      showNotice("이 이메일로 가입된 계정이 있다면 재설정 링크를 보냈습니다. 메일함을 확인해 주세요.");
+      toForm("login");
+    } catch (err) {
+      showError(err.message);
+    }
+  });
+
+  resetPasswordForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    clearMessages();
+    const password = resetPasswordForm.password.value;
+    const passwordConfirm = resetPasswordForm.passwordConfirm.value;
+    if (password !== passwordConfirm) {
+      showError("두 비밀번호가 서로 다릅니다.");
+      return;
+    }
+    try {
+      await Auth.updatePassword(password);
+      resetPasswordForm.reset();
+      const session = await Auth.getSession();
+      if (session) showApp(session);
+      else showGate();
+    } catch (err) {
+      showError(err.message);
+    }
+  });
+
   logoutBtn.addEventListener("click", async () => {
     try {
       await Auth.signOut();
@@ -124,15 +180,32 @@
     }
   });
 
-  Auth.onAuthStateChange((session) => {
+  // 재설정 링크로 막 들어온 상태에서, 아래 초기 getSession() 체크가 뒤늦게 끝나며
+  // "새 비밀번호 설정" 화면을 도로 앱 화면으로 덮어써 버리는 걸 막기 위한 플래그.
+  let isPasswordRecovery = false;
+
+  Auth.onAuthStateChange((event, session) => {
+    if (event === "PASSWORD_RECOVERY") {
+      isPasswordRecovery = true;
+      // 임시 세션이 생겼지만 곧장 앱으로 들여보내지 않고 새 비밀번호부터 정하게 한다.
+      authGate.hidden = false;
+      modeSwitcher.hidden = true;
+      pdsApp.hidden = true;
+      document.getElementById("habit-app").hidden = true;
+      toForm("reset-password");
+      return;
+    }
     if (session) showApp(session);
     else showGate();
   });
 
   Auth.getSession()
     .then((session) => {
+      if (isPasswordRecovery) return;
       if (session) showApp(session);
       else showGate();
     })
-    .catch(() => showGate());
+    .catch(() => {
+      if (!isPasswordRecovery) showGate();
+    });
 })();

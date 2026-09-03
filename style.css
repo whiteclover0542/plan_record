@@ -670,6 +670,10 @@ tr.is-important {
   padding: 0 1.5rem;
 }
 
+.mode-switcher[hidden] {
+  display: none;
+}
+
 .mode-btn {
   font-family: inherit;
   padding: 0.5rem 1rem;
@@ -748,6 +752,10 @@ tr.is-important {
   margin-top: 1rem;
 }
 
+.auth-form[hidden] {
+  display: none;
+}
+
 .auth-form h2 {
   margin: 0;
   font-size: 1rem;
@@ -767,6 +775,41 @@ tr.is-important {
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--input-bg);
+  color: var(--text);
+}
+
+/* 커스텀 폰트(나눔스퀘어라운드)에 비밀번호 마스킹용 점(•) 글자가 없어서
+   값이 들어가도 화면엔 빈칸처럼 보인다 — 비밀번호 칸만 시스템 폰트로 되돌린다. */
+.auth-form input[type="password"] {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.password-field {
+  position: relative;
+  display: flex;
+}
+
+.password-field input {
+  flex: 1;
+  padding-right: 3.6rem;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 0.3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.toggle-password-btn:hover {
+  background: var(--hover);
   color: var(--text);
 }
 
@@ -864,6 +907,10 @@ tr.is-important {
   font-size: 0.85rem;
   margin: 1rem 0 0.4rem;
   color: var(--text-muted);
+}
+
+#pds-app .form-grid[hidden] {
+  display: none;
 }
 
 #pds-app .form-grid {
