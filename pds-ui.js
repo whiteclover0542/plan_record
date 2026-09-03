@@ -22,6 +22,7 @@
     openTodoId: null,
     calYear: todayInit.getFullYear(),
     calMonth: todayInit.getMonth(),
+    todoView: "calendar",
     filters: { query: "", status: "all", tag: "all" },
     sortBy: "due_date",
     retroCache: { todos: [], logsByTodo: new Map() },
@@ -512,7 +513,55 @@
         grid.appendChild(cell);
       }
     });
+
+    renderTodoTable(sorted);
   }
+
+  function renderTodoTable(sorted) {
+    const tbody = document.getElementById("todo-record-tbody");
+    tbody.innerHTML = "";
+    const today = todayInSeoul();
+
+    for (const t of sorted) {
+      const overdue = t.status !== "done" && t.due_date < today;
+      const tr = el("tr");
+
+      tr.appendChild(el("td", { text: t.due_date }));
+      tr.appendChild(el("td", { text: (t.status === "done" ? "✓ " : "") + t.title, class: t.status === "done" ? "done-text" : "" }));
+      tr.appendChild(el("td", { text: planNameOf(t.plan_id) }));
+      tr.appendChild(el("td", { text: priorityLabel(t.priority), class: "priority-" + t.priority }));
+      tr.appendChild(el("td", { text: (t.tags || []).join(", ") }));
+      tr.appendChild(el("td", { text: String(t.estimated_minutes) }));
+      tr.appendChild(
+        el("td", {}, [
+          el("span", {
+            class: "badge" + (t.status === "done" ? " badge-done" : overdue ? " badge-overdue" : ""),
+            text: t.status === "done" ? "완료" : overdue ? "지연" : "진행 중",
+          }),
+        ])
+      );
+
+      const actionTd = el("td");
+      actionTd.appendChild(el("button", { type: "button", text: "상세", onclick: () => openTodoDetail(t.id) }));
+      tr.appendChild(actionTd);
+
+      tbody.appendChild(tr);
+    }
+
+    document.getElementById("todo-table-empty").hidden = !(state.todoView === "table" && sorted.length === 0);
+  }
+
+  function setTodoView(view) {
+    state.todoView = view;
+    document.getElementById("todo-calendar-view").hidden = view !== "calendar";
+    document.getElementById("todo-record-table").hidden = view !== "table";
+    document.getElementById("todo-view-toggle-btn").textContent = view === "calendar" ? "📋 테이블로 보기" : "🗓 캘린더로 보기";
+  }
+
+  document.getElementById("todo-view-toggle-btn").addEventListener("click", () => {
+    setTodoView(state.todoView === "calendar" ? "table" : "calendar");
+    renderTodoTable(sortTodos(filterTodos(state.calendarTodos, state.filters), state.sortBy));
+  });
 
   document.getElementById("todo-cal-prev-btn").addEventListener("click", () => {
     state.calMonth -= 1;
@@ -956,6 +1005,7 @@
     initTabs();
     setPlanFormDefaultDates();
     setTodoFormDefaultDate();
+    setTodoView(state.todoView);
     try {
       await refreshPlans();
       await refreshCalendarTodos();

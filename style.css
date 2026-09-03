@@ -1193,6 +1193,18 @@ tr.is-important {
   border-color: var(--panel-border);
 }
 
+#pds-app #todo-record-table td.priority-high {
+  color: #ff9a9a;
+}
+
+#pds-app #todo-record-table td.priority-medium {
+  color: #e8c983;
+}
+
+#pds-app #todo-record-table td.priority-low {
+  color: #a9cced;
+}
+
 #pds-app .todo-cal-item.status-overdue {
   border-color: var(--danger);
   box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.35);
@@ -1260,7 +1272,7 @@ tr.is-important {
 .calendar-overview {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 1rem 1.5rem 0;
+  padding: 1rem 1.5rem 1rem;
   border-bottom: 1px solid var(--panel-border);
 }
 
