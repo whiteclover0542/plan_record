@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>T07 플랜두씨 다이어리 2 — 제출 문서</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 14mm 15mm; }
+  :root{
+    --ink:#16171a; --muted:#5b5d66; --line:#e2e3e7; --line-soft:#eeeff2;
+    --accent:#7c3aed; --accent-soft:#f4efff;
+    --ok:#0f7a37; --ok-soft:#eafaf0; --warn:#a8560a; --warn-soft:#fff5e8;
+    --panel:#fafafa; --surface:#fcfcfb;
+    --neg:#2a78d6; --pos:#e34948;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Malgun Gothic","Apple SD Gothic Neo","Segoe UI",system-ui,sans-serif;
+       color:var(--ink);font-size:10.4pt;line-height:1.6;background:#fff;}
+  h1{font-size:20pt;margin:0 0 4px;letter-spacing:-.02em;}
+  h2{font-size:13pt;margin:0 0 10px;padding-bottom:5px;border-bottom:2px solid var(--accent);letter-spacing:-.01em;}
+  h3{break-after:avoid;font-size:11pt;margin:16px 0 6px;color:#2c2d33;}
+  p{margin:0 0 8px;}
+  a{color:#5b21b6;text-decoration:none;word-break:break-all;}
+  code{font-family:Consolas,"D2Coding",monospace;font-size:.9em;background:#f2f2f4;
+       padding:1px 4px;border-radius:3px;}
+  section{margin-bottom:16px;}
+  .cover{padding-bottom:10px;border-bottom:3px solid var(--accent);margin-bottom:16px;}
+  .sub{color:var(--muted);font-size:10pt;margin:0;}
+  .urls{display:flex;gap:10px;margin-top:10px;}
+  .urlbox{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;}
+  .urlbox .k{font-size:8.4pt;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
+  table{width:100%;break-inside:avoid;border-collapse:collapse;margin:8px 0 10px;font-size:9.5pt;}
+  th,td{border:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top;}
+  th{background:var(--panel);font-weight:600;font-size:9.2pt;}
+  td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;}
+  .neg{color:var(--neg);font-weight:600;}
+  .pos{color:var(--pos);font-weight:600;}
+  tr.total td{background:#f6f6f8;font-weight:700;}
+  tr.rulerow td{background:var(--accent-soft);color:#5b21b6;font-style:italic;font-size:9pt;}
+  ol,ul{margin:0 0 8px;padding-left:18px;}
+  li{margin-bottom:3px;}
+  .callout{break-inside:avoid;background:var(--warn-soft);border-left:3px solid var(--warn);
+           padding:8px 11px;border-radius:0 4px 4px 0;margin:9px 0;font-size:9.6pt;}
+  .callout strong{color:#8a4708;}
+  .spec{break-inside:avoid;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:9px 12px;
+        margin:9px 0;font-size:9.6pt;}
+  .figure{background:var(--surface);border:1px solid var(--line);border-radius:8px;
+          padding:12px 14px 8px;margin:10px 0 12px;break-inside:avoid;}
+  .figtitle{font-size:10.4pt;font-weight:700;margin-bottom:1px;}
+  .figsub{font-size:8.8pt;color:var(--muted);margin-bottom:8px;}
+  .legend{display:flex;gap:16px;font-size:8.8pt;color:var(--muted);margin-top:2px;
+          padding-top:7px;border-top:1px solid var(--line-soft);}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .sw{width:11px;height:11px;border-radius:2.5px;display:inline-block;}
+  .ax{font-size:8pt;fill:#8b8a85;}
+  .ax0{font-size:8pt;fill:#5b5d66;font-weight:600;}
+  .val{font-size:9pt;font-weight:700;fill:#2c2d33;}
+  .dl{font-size:8.6pt;font-weight:600;fill:#2c2d33;}
+  .dt{font-size:7.8pt;fill:#8b8a85;}
+  .rule{font-size:7.8pt;fill:#6d28d9;font-weight:600;}
+  .rulem{font-size:7.8pt;fill:#8b8a85;}
+  .tiles{break-inside:avoid;display:flex;gap:9px;margin:10px 0;}
+  .tile{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:7px;
+        padding:9px 11px;text-align:center;}
+  .tile .lab{font-size:8.4pt;color:var(--muted);margin-bottom:3px;line-height:1.3;}
+  .tile .num{font-size:17pt;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+  .tile .unit{font-size:9pt;font-weight:500;color:var(--muted);}
+  .check li{margin-bottom:5px;}
+  .check .mark{color:var(--ok);font-weight:700;}
+  .note{font-size:9pt;color:var(--muted);}
+  .avoid{break-inside:avoid;}
+  .pb{break-before:page;}
+  footer{margin-top:18px;padding-top:8px;border-top:1px solid var(--line);
+         font-size:8.6pt;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>T07 플랜두씨 다이어리 2</h1>
+  <p class="sub">로그인 없이 열리던 Plan-Do-See 다이어리에 Supabase Auth를 붙이고,
+     서버(RLS)가 “이 자료는 이 계정 것”을 강제하게 만든 기록 · 2026-09-05</p>
+  <div class="urls">
+    <div class="urlbox"><div class="k">결과물</div>
+      <a href="https://whiteclover0542.github.io/plan_record/">whiteclover0542.github.io/plan_record/</a>
+      <div class="note" style="margin-top:3px">첫 화면이 로그인 화면이다.</div></div>
+    <div class="urlbox"><div class="k">소스 (고정 commit)</div>
+      <a href="https://github.com/whiteclover0542/plan_record/tree/6b6673b">github.com/whiteclover0542/plan_record/tree/6b6673b</a>
+      <div class="note" style="margin-top:3px">T06 이력이 조상 커밋으로 포함(<code>a1a7c29</code>).</div></div>
+  </div>
+</div>
+
+<section>
+<h2>카드 5 · 잠근 앱으로 5일 써 보기</h2>
+<p>로그인이 걸린 앱을 실제 내 계정으로 <strong>서로 다른 실제 날짜 5일</strong> 동안 썼고,
+   2일차 뒤·3일차 앞에 계획 규칙을 한 번 바꿨다.</p>
+
+<div class="spec">
+  <strong>1일차에 먼저 고정한 것</strong> — <b>질문</b>: 계획한 우선순위·시간 배분대로 하루 할 일을 빠짐없이 소화하고 있는가?
+  <b>지표</b>: 그날 완료한 할 일의 일일 차이 시간(실제−예상) 합계 · <b>단위</b>: 분<br/>
+  <b>계산 규칙</b>: 결측(미완료)은 제외 · 중복(실행기록 2건 이상)은 최근 1건만 · 이상치(실제가 예상의 5배 이상이거나 음수)는 제외하고 메모 · 분 단위 반올림 · 주 시작은 월요일
+</div>
+
+<div class="figure">
+  <div class="figtitle">일일 차이 시간 (실제 − 예상)</div>
+  <div class="figsub">0에 가까울수록 예상을 정확히 맞춘 것. 막대 길이가 오차 크기, 색이 방향.</div>
+  <svg viewBox="0 0 660 300" width="100%" role="img" aria-label="5일 일일 차이 시간 다이버징 막대그래프">
+<text x="68" y="18" text-anchor="end" class="ax">분</text>
+<line x1="78" y1="216.5" x2="636" y2="216.5" stroke="#e6e5e1" stroke-width="1"/>
+<text x="68" y="219.9" text-anchor="end" class="ax">-30</text>
+<line x1="78" y1="177.6" x2="636" y2="177.6" stroke="#e6e5e1" stroke-width="1"/>
+<text x="68" y="181.0" text-anchor="end" class="ax">-20</text>
+<line x1="78" y1="138.7" x2="636" y2="138.7" stroke="#e6e5e1" stroke-width="1"/>
+<text x="68" y="142.1" text-anchor="end" class="ax">-10</text>
+<line x1="78" y1="99.8" x2="636" y2="99.8" stroke="#8b8a85" stroke-width="1.25"/>
+<text x="68" y="103.2" text-anchor="end" class="ax0">0</text>
+<line x1="78" y1="61.0" x2="636" y2="61.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="68" y="64.4" text-anchor="end" class="ax">+10</text>
+<line x1="301.2" y1="22" x2="301.2" y2="248" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="308.2" y="33" class="rule">규칙 변경 · 09-02 18:09</text>
+<text x="294.2" y="33" text-anchor="end" class="rulem">감으로</text>
+<path d="M107.8,99.8 L107.8,115.3 Q107.8,119.3 111.8,119.3 L155.8,119.3 Q159.8,119.3 159.8,115.3 L159.8,99.8 Z" fill="#2a78d6"/>
+<text x="133.8" y="134.3" text-anchor="middle" class="val">-5분</text>
+<text x="133.8" y="264" text-anchor="middle" class="dl">Day 1</text>
+<text x="133.8" y="277" text-anchor="middle" class="dt">09-01</text>
+<path d="M219.4,99.8 L219.4,103.6 Q219.4,107.6 223.4,107.6 L267.4,107.6 Q271.4,107.6 271.4,103.6 L271.4,99.8 Z" fill="#2a78d6"/>
+<text x="245.4" y="122.6" text-anchor="middle" class="val">-2분</text>
+<text x="245.4" y="264" text-anchor="middle" class="dl">Day 2</text>
+<text x="245.4" y="277" text-anchor="middle" class="dt">09-02</text>
+<path d="M331.0,99.8 L331.0,212.5 Q331.0,216.5 335.0,216.5 L379.0,216.5 Q383.0,216.5 383.0,212.5 L383.0,99.8 Z" fill="#2a78d6"/>
+<text x="357.0" y="231.5" text-anchor="middle" class="val">-30분</text>
+<text x="357.0" y="264" text-anchor="middle" class="dl">Day 3</text>
+<text x="357.0" y="277" text-anchor="middle" class="dt">09-03</text>
+<path d="M442.6,99.8 L442.6,45.5 Q442.6,41.5 446.6,41.5 L490.6,41.5 Q494.6,41.5 494.6,45.5 L494.6,99.8 Z" fill="#e34948"/>
+<text x="468.6" y="32.5" text-anchor="middle" class="val">+15분</text>
+<text x="468.6" y="264" text-anchor="middle" class="dl">Day 4</text>
+<text x="468.6" y="277" text-anchor="middle" class="dt">09-04</text>
+<path d="M554.2,99.8 L554.2,88.3 Q554.2,84.3 558.2,84.3 L602.2,84.3 Q606.2,84.3 606.2,88.3 L606.2,99.8 Z" fill="#e34948"/>
+<text x="580.2" y="75.3" text-anchor="middle" class="val">+4분</text>
+<text x="580.2" y="264" text-anchor="middle" class="dl">Day 5</text>
+<text x="580.2" y="277" text-anchor="middle" class="dt">09-05</text>
+</svg>
+  <div class="legend">
+    <span><i class="sw" style="background:#2a78d6"></i>음수 — 예상보다 빨리 끝남</span>
+    <span><i class="sw" style="background:#e34948"></i>양수 — 예상보다 오래 걸림</span>
+    <span><i class="sw" style="background:#7c3aed;width:3px;height:11px;border-radius:1px"></i>계획 규칙 변경</span>
+  </div>
+</div>
+
+<table>
+<thead><tr><th>일자</th><th>날짜</th><th class="n">완료</th><th class="n">예상(분)</th>
+<th class="n">실제(분)</th><th class="n">일일 차이(분)</th><th>규칙</th></tr></thead>
+<tbody>
+<tr><td>Day 1</td><td>2026-09-01</td><td class="n">1</td><td class="n">60</td><td class="n">55</td><td class="n neg">−5</td><td>변경 전(감으로)</td></tr>
+<tr><td>Day 2</td><td>2026-09-02</td><td class="n">2</td><td class="n">130</td><td class="n">128</td><td class="n neg">−2</td><td>변경 전(감으로)</td></tr>
+<tr class="rulerow"><td colspan="7">계획 규칙 변경 · 2026-09-02 18:09 (Asia/Seoul) — Day 2 기록 직후, Day 3 시작 전 · 예상 시간을 “감으로” → “비슷한 예전 할 일의 실제 걸린 시간을 참고해서”</td></tr>
+<tr><td>Day 3</td><td>2026-09-03</td><td class="n">1</td><td class="n">120</td><td class="n">90</td><td class="n neg">−30</td><td>변경 후(적용 안 함)</td></tr>
+<tr><td>Day 4</td><td>2026-09-04</td><td class="n">1</td><td class="n">90</td><td class="n">105</td><td class="n pos">+15</td><td>변경 후(적용함)</td></tr>
+<tr><td>Day 5</td><td>2026-09-05</td><td class="n">1</td><td class="n">60</td><td class="n">64</td><td class="n pos">+4</td><td>변경 후(적용함)</td></tr>
+<tr class="total"><td colspan="2">합계</td><td class="n">6</td><td class="n">460</td><td class="n">442</td><td class="n">−18</td><td></td></tr>
+</tbody></table>
+
+<h3>규칙 변경 전 vs 후 — 절대 오차 평균</h3>
+<div class="tiles">
+  <div class="tile"><div class="lab">변경 전<br/>Day 1~2</div><div class="num" style="color:#0f7a37">3.50<span class="unit">분</span></div></div>
+  <div class="tile"><div class="lab">변경 후<br/>Day 3~5</div><div class="num" style="color:#a8560a">16.33<span class="unit">분</span></div></div>
+  <div class="tile"><div class="lab">새 규칙을 실제로 적용한 날만<br/>Day 4~5</div><div class="num" style="color:#a8560a">9.50<span class="unit">분</span></div></div>
+</div>
+<p class="note">부호와 무관하게 “예상을 얼마나 잘 맞췄는가”를 보려면 절대 오차로 봐야 한다.
+   전후 비교는 같은 지표·같은 단위·같은 계산 규칙으로만 했다.</p>
+
+<div class="callout">
+  <strong>결론</strong> — 예상 시간을 “감으로 적기”에서 “비슷한 과거 실제 기록을 보고 적기”로 바꿨지만,
+  절대 오차는 3.50분 → 16.33분(실제 적용한 이틀만 봐도 9.50분)으로 <strong>줄지 않고 오히려 커졌다.</strong>
+  다만 규칙을 바꾼 시점과 작업 유형이 반복형 집안일에서 개발 작업으로 바뀐 시점이 겹쳐 있어,
+  이 5일만으로는 규칙의 효과와 작업 유형의 효과를 분리할 수 없다. 같은 유형의 작업으로 며칠 더
+  기록해야 규칙 효과를 말할 수 있다. 보조 관찰: 5일 내내 지연 0건·막힘 0건,
+  high 우선순위 할 일은 2번 나왔고 둘 다 완료(2/2).
+</div>
+</section>
+
+<section>
+<h3>화면에 보이는 합계와 손으로 더한 값 대조</h3>
+<table>
+<thead><tr><th>구분</th><th class="n">예상(분)</th><th class="n">실제(분)</th><th class="n">차이(분)</th></tr></thead>
+<tbody>
+<tr><td>화면 — 집정리하기</td><td class="n">190</td><td class="n">183</td><td class="n">−7</td></tr>
+<tr><td>화면 — CVE_정보판 사이트 이어서 개발하기</td><td class="n">270</td><td class="n">319</td><td class="n">+49</td></tr>
+<tr class="total"><td>화면 합계</td><td class="n">460</td><td class="n">502</td><td class="n">+42</td></tr>
+<tr class="total"><td>손 계산 합계 (위 5일 표)</td><td class="n">460</td><td class="n">442</td><td class="n">−18</td></tr>
+<tr><td>일치 여부</td><td class="n" style="color:#0f7a37;font-weight:700">일치</td>
+<td class="n" style="color:#a8560a;font-weight:700">60분 차이</td>
+<td class="n" style="color:#a8560a;font-weight:700">60분 차이</td></tr>
+</tbody></table>
+<div class="callout">
+  <strong>60분 차이의 원인을 규명했다</strong> — Day 5 할 일에 실행기록이 2건(60분·64분) 쌓였는데,
+  <b>화면은 실행기록을 전부 더하고</b>(<code>Aggregation.computeForPlan</code>),
+  <b>지표는 1일차에 고정한 중복 규칙대로 최근 1건(64분)만 쓴다.</b>
+  차액 60분이 중복된 옛 기록 1건과 정확히 일치한다.
+  <code>execution_logs</code>에는 DELETE 정책이 없어(append-only) 옛 기록을 지워 화면을 맞출 수 없고,
+  그렇게 하는 대신 <b>미리 정해 둔 규칙을 지키고 차이를 근거로 남겼다.</b>
+  (중복 경위: 완료 폼의 “실제 걸린 시간” 칸 기본값이 예상 시간이라 60분이 저장됨 → 되돌리기 후
+  64분으로 재완료 → <code>complete_todo</code> RPC가 완료할 때마다 새로 INSERT.)
+</div>
+<p class="note">대조할 때 함께 확인해야 할 것: ① <b>미완료 할 일</b> — 화면의 계획별 차이는 미완료 할 일의
+   예상 시간까지 더한다. 실제로 Day 5 할 일을 완료하기 전에는 이 계획의 차이가 −75분으로 보였고 지표와 달랐다.
+   ② <b>중복 실행기록</b> — 위 사례. “T06 플랜두씨 다이어리 앱 만들기” 계획은 이번 5일 로그 대상이 아니라 제외했다.</p>
+</section>
+
+<section class="pb">
+<h2>인증 구현 설명서</h2>
+
+<h3>① 무엇으로 붙였나</h3>
+<p>Supabase Auth(이메일+비밀번호), <code>@supabase/supabase-js@2.112.4</code>.</p>
+
+<h3>② 왜 그걸 골랐나</h3>
+<p>이미 Supabase Postgres + Row Level Security 위에서 이 앱이 동작 중이라 <code>auth.uid()</code>로 바로 연결된다. 검토했으나 고르지 않은 방법:</p>
+<ul>
+<li><b>직접 구현(bcrypt+JWT)</b> — 세션 무효화·토큰 재발급 등 보안 디테일을 직접 구현·검증하는 부담이 큼</li>
+<li><b>별도 인증 서비스(Auth0/Clerk)</b> — 인프라가 하나 더 늘고 DB RLS와의 연동 지점이 늘어남</li>
+</ul>
+
+<h3>③ 어디를 어떻게 고쳤나</h3>
+<ul>
+<li><b>가입</b>: <code>#signup-form</code> → <code>pds-auth.js</code> → <code>pds-app.js</code>(<code>Auth.signUp</code>) → <code>POST /auth/v1/signup</code> → <code>auth.users</code>에 계정 생성(비밀번호는 bcrypt 해시로 저장)</li>
+<li><b>로그인</b>: <code>#login-form</code> → <code>pds-auth.js</code> → <code>Auth.signIn</code> → <code>POST /auth/v1/token?grant_type=password</code> → JWT access/refresh token 발급</li>
+<li><b>로그아웃</b>: <code>#logout-btn</code> → <code>Auth.signOut</code> → <code>POST /auth/v1/logout</code> → 세션 사라짐을 감지해 로그인 화면으로 복귀</li>
+<li><b>자료 조회</b>: <code>pds-ui.js</code>의 <code>refreshPlans()</code> → <code>Plans.list</code> → PostgREST가 요청 JWT의 <code>auth.uid()</code>로 <code>plans_select</code> 정책(<code>using (user_id = auth.uid())</code>)을 적용해 내 자료만 반환</li>
+</ul>
+<p>DB 쪽: <code>supabase/migration-t07-auth.sql</code>로 기존 T06 데이터를 <b>보존한 채</b> 5개 표
+(<code>plans</code>/<code>plan_revisions</code>/<code>todos</code>/<code>execution_logs</code>/<code>retrospective_notes</code>)
+전부에 <code>user_id</code> 컬럼을 추가하고 RLS를 <code>authenticated</code> + <code>user_id = auth.uid()</code> 기준으로 재작성했다.
+<code>anon</code> 롤에는 이 5개 표 어떤 권한도 남기지 않았다.</p>
+
+<h3>④ 안 열리는 것을 확인한 기록</h3>
+<p class="note">anon key만으로 라이브 프로젝트에 curl로 직접 요청을 보내 확인(일회용 테스트 계정 사용, 비밀번호는 어디에도 남기지 않음). 아래는 <b>실제 관측된 상태 코드</b>다.</p>
+<table>
+<thead><tr><th>확인</th><th>성공 요청</th><th>거절 / 무효 요청</th></tr></thead>
+<tbody>
+<tr><td>가입 중복</td><td>새 이메일 <code>signup</code> → <code>200</code></td><td>같은 이메일 재가입 → <code>422 user_already_exists</code></td></tr>
+<tr><td>로그인 문구</td><td>올바른 비밀번호 → <code>200</code></td><td>틀린 비밀번호 / 없는 이메일 → <b>둘 다 동일하게</b> <code>400 Invalid login credentials</code></td></tr>
+<tr><td>비밀번호 저장</td><td>—</td><td><code>encrypted_password</code> = <code>$2a$10$…</code>(bcrypt). 같은 비밀번호로 만든 두 계정도 서로 다른 값</td></tr>
+<tr><td>세션</td><td>로그인 상태 <code>GET /rest/v1/plans</code> → <code>200</code></td><td>로그아웃 뒤 refresh token 재사용 → <code>400 refresh_token_not_found</code></td></tr>
+<tr><td>계정 간 읽기·수정·삭제</td><td>본인 자료 → <code>200</code>(정상 반영)</td><td>남의 행 양방향 시도 → <code>200</code>+빈 배열(값 변경 없음, 실제 대조 확인). 소유권 위조·교차 INSERT → <code>403 42501</code></td></tr>
+<tr><td>주소 위조</td><td>—</td><td><code>?user_id=eq.&lt;남의 uuid&gt;</code> → <code>200</code>+빈 배열(RLS가 서버에서 강제)</td></tr>
+<tr><td>비로그인 직접 요청</td><td>—</td><td><code>Authorization</code> 없이 요청 → <code>401 permission denied for table plans</code></td></tr>
+<tr><td>계정 삭제</td><td><code>delete_my_account()</code> → <code>204</code></td><td>삭제 후 재로그인 → <code>400 invalid_credentials</code>, 자료도 FK cascade로 실제 삭제</td></tr>
+</tbody></table>
+
+<h3>⑤ AI와 나</h3>
+<p>인증 방식은 AI가 Supabase Auth를 추천했고 내가 최종 승인했다. RLS 마이그레이션 SQL과 로그인 게이트 코드는 AI가 작성했지만,
+   대시보드에서 단계별로 실제 실행한 것과 실계정 생성·데이터 이관 확인은 내가 직접 했다.
+   카드 2~4의 거절 근거는 AI가 라이브 프로젝트에 curl로 요청을 보내 모았고,
+   예상과 다른 관측이 나왔을 때 문장을 고쳐 덮는 대신 원인을 규명해 ⑥에 그대로 남기게 했다.
+   5일 로그의 질문·지표·계산 규칙은 내가 정했고 기록도 직접 입력했다.</p>
+
+<h3>⑥ 아직 못 막은 것</h3>
+<ul>
+<li><b>로그아웃·비밀번호 변경·계정 삭제 중 무엇을 해도, 그 전에 발급된 access token(JWT)은 자연 만료(최대 1시간) 전까지 계속 통한다.</b>
+    refresh token과 계정 자체는 즉시 무효화되지만, access token은 서명·만료만으로 자체 검증되는 무상태 토큰이라
+    서버가 개별 취소를 기억하지 않기 때문이다. 토큰이 탈취되면 최대 1시간의 위험 구간이 남는다.
+    완화책은 짧은 만료(1시간)뿐이고, 서버 쪽 토큰 블랙리스트나 세션 버전 관리는 붙이지 않았다.</li>
+<li><b>남의 행 수정·삭제 시도가 항상 명시적 403은 아니다</b> — 경우에 따라 “조용한 무효 처리”(<code>200</code>+빈 배열)로 응답한다.
+    원인: Postgres RLS는 UPDATE/DELETE 대상 행을 찾을 때 그 표의 SELECT 정책도 함께 적용하므로,
+    애초에 SELECT를 통과 못 하는 남의 행은 대상 후보로도 안 보인다. 데이터는 안전하지만 응답 형태가 균일하지 않다.</li>
+<li><b>무차별 대입(brute-force) 로그인 시도 횟수 제한을 이 앱이 직접 만들지 않았다</b> — Supabase Auth 자체의 기본 rate limit에 의존한다.</li>
+<li><b>비밀번호 재설정 메일의 링크 클릭은 실제로 밟아보지 못했다</b> — 기능·화면 전환은 확인했으나 메일함 접근이 안 됐다.</li>
+</ul>
+</section>
+
+<section class="pb">
+<h2>카드 1~4 · 증거 요약</h2>
+
+<h3>카드 1 — 무엇으로 붙일지 고르고, 이유를 적기</h3>
+<p>Supabase Auth(이메일+비밀번호), <code>@supabase/supabase-js@2.112.4</code>. 고르지 않은 방법과 이유는 설명서 ②.
+   가입 <code>200</code> · 로그인 <code>200</code> · 로그아웃 <code>204</code> · 중복 가입 <code>422</code> ·
+   로그인 실패 문구는 두 경우 완전히 동일. 로그인 없이 자료 화면 주소를 열면 로그인 화면만 보이고, 서버도 <code>401</code>로 거절한다.
+   T06 자료 이관은 <code>still_null=0</code>(계획 5건 전부)로 확인했고, 배포 사이트에서 UI 클릭으로 14개 항목을 재확인했다.</p>
+
+<h3>카드 2 — 비밀번호를 어떻게 맡아 두는지 보이기</h3>
+<p>저장은 전부 Supabase Auth(GoTrue)에 위임했고 앱 코드는 비밀번호를 직접 해싱·저장하지 않는다.
+   실제 저장 값은 <code>$2a$10$…</code> — <b>bcrypt</b>(cost 10)이고 입력한 글자는 어디에도 보이지 않는다.
+   <b>같은 비밀번호로 만든 두 계정의 저장 값이 서로 다름</b>을 대조로 확인했다(salt가 다르기 때문).
+   수집한 모든 요청/응답을 실제 비밀번호 문자열로 grep해 원문이 전무함을 확인했다.</p>
+
+<h3>카드 3 — 들어온 사람을 어떻게 기억하는지 보이기</h3>
+<p>JWT access token(<code>alg: ES256</code>, 비대칭키) + refresh token. 만료는 <code>expires_in=3600</code>(1시간)으로,
+   JWT payload의 <code>exp</code>/<code>iat</code>를 직접 디코드해 확인했다. 토큰은 URL에 실리지 않고
+   <code>Authorization</code> 헤더로만 전달된다. 같은 주소·같은 방식으로 로그아웃 전/후를 비교했고,
+   refresh token은 즉시 거절되지만 access token은 만료 전까지 통한다는 점을 ⑥에 적었다.
+   이 프로젝트는 <code>ES256</code>이라 공유 비밀키 자체가 없는 구조이며, 저장소 전체 grep으로
+   클라이언트 코드·배포 파일·Git 이력에 비밀키가 없음을 확인했다.</p>
+
+<h3>카드 4 — 남의 자료가 안 열리는 것을 보이기</h3>
+<p>계정 두 개를 만들어 각각 자료를 넣고 양방향으로 교차 접근을 시도했다. 비밀번호는 이 문서 어디에도 적지 않았다.
+   읽기·수정·삭제는 양방향 모두 무효(<code>200</code>+빈 배열, 상대 자료의 제목·건수 실제 대조로 변경 없음 확인),
+   소유권 위조와 교차 INSERT는 <code>403 42501</code>, 주소에 남의 계정 id를 필터로 넣어도 빈 배열,
+   <code>complete_todo</code> RPC로 남의 할 일을 완료 처리하려 해도 <code>newly_completed: false</code>,
+   비로그인 직접 요청은 <code>401</code>. 목록에는 본인 자료만 나온다.
+   거절을 만드는 소스는 <code>migration-t07-auth.sql</code> STEP 6(RLS 정책)·STEP 8(RPC 소유자 조건)이다.</p>
+<p class="note">읽기·수정·삭제가 설계 의도였던 <code>403</code>이 아니라 <code>200</code>+빈 배열로 막히는 이유까지
+   SQL로 규명해 ⑥에 적었다 — 응답 코드를 의도대로 꾸미지 않고 실제 관측값을 그대로 남겼다.</p>
+</section>
+
+<section class="avoid">
+<h2>짧은 확인 방법</h2>
+<ol>
+<li><b>어디로 가나요</b> — <a href="https://whiteclover0542.github.io/plan_record/">whiteclover0542.github.io/plan_record/</a> 접속(첫 화면이 로그인/가입 화면).</li>
+<li><b>세 단계 안에 무엇을 하나요</b> — (1) 가입하기로 새 계정을 만들거나 기존 계정으로 로그인 (2) “1. 계획” 탭에서 계획 목록을 본다 (3) “3. 돌아보기” 탭에서 집계 숫자를 확인한다.</li>
+<li><b>무엇이 보이면 통과인가요</b> — 로그인 전에는 로그인 화면만 보이고, 로그인 후에는 그 계정에 속한 자료만 보인다(다른 계정 자료는 절대 섞이지 않는다).</li>
+<li><b>안 될 때는 무엇이 보이나요</b> — 로그인 없이 자료 화면 주소를 열면 계속 로그인 화면만 보이고, 개발자 콘솔에는 Supabase REST 요청이 401/403으로 거절된 로그가 찍힌다.</li>
+</ol>
+</section>
+
+<section class="avoid">
+<h2>AI와 내 판단 3줄</h2>
+<p><b>① AI에게 맡긴 일</b> — RLS 소유권 마이그레이션 SQL과 로그인 게이트 코드 작성, curl로 카드 2~4의 거절 근거 수집, 예상과 다른 관측이 나왔을 때 원인 규명, 문서 정리.</p>
+<p><b>② 내가 판단한 일</b> — 인증 방식 최종 승인, 마이그레이션을 대시보드에서 직접 단계별 실행, 5일 로그의 질문·지표·계산 규칙 확정과 실제 기록 입력.</p>
+<p><b>③ AI 제안을 따르지 않은 일</b> — 중복된 실행기록을 지워 화면 숫자를 맞추자는 제안 대신, 1일차에 정해 둔 규칙(중복은 최근 1건)을 지키고 60분 차이를 근거로 남겼다. 미완료 할 일을 억지로 완료 처리하지 않은 것도 같은 이유다.</p>
+</section>
+
+<section class="avoid">
+<h2>제출물 확인</h2>
+<ul class="check" style="list-style:none;padding-left:0">
+<li><span class="mark">✔</span> 가입·로그인·로그아웃이 되고, 로그인 없이 자료 화면을 열면 로그인 화면이 나옵니다.</li>
+<li><span class="mark">✔</span> 저장된 비밀번호에 입력한 글자가 보이지 않습니다.</li>
+<li><span class="mark">✔</span> 로그아웃 뒤 같은 값으로 다시 요청하면 거절됩니다.
+    <span class="note">— refresh token은 즉시 거절. access token은 만료 전까지 통하며, 이 한계를 ⑥에 적었습니다.</span></li>
+<li><span class="mark">✔</span> 남의 자료를 읽기·수정·삭제하려는 요청이 양방향으로 모두 거절되고, 목록에도 섞이지 않습니다.</li>
+<li><span class="mark">✔</span> 설명서 여섯 항목이 나뉘어 있고, ⑥이 비어 있지 않습니다.</li>
+<li><span class="mark">✔</span> 서로 다른 날짜 5일의 기록과 3일차 전 규칙 변경이 순서대로 있습니다.</li>
+<li><span class="mark">✔</span> 제출물에 비밀번호·토큰·비밀키 원문이 없습니다.
+    <span class="note">— 저장소 전체 grep으로 확인. <code>config.js</code>의 anon key 하나뿐이며, 이는 Supabase 설계상 공개되는 키입니다.</span></li>
+</ul>
+</section>
+
+<footer>
+T07 플랜두씨 다이어리 2 · 2026-09-05 · 작업 근거 전문은 저장소의 <code>PROGRESS.md</code>,
+5일 로그 원본은 <code>card5-log.md</code>에 있습니다.
+</footer>
+
+</body>
+</html>
