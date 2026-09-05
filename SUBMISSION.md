@@ -12,7 +12,9 @@ https://whiteclover0542.github.io/plan_record/
 
 ## 소스 주소
 
-COMMIT_URL_PLACEHOLDER
+https://github.com/whiteclover0542/plan_record/tree/6b6673b
+
+브랜치가 아니라 제출 시점의 고정 commit을 가리킨다 — 이후 커밋에 영향받지 않고 제출 당시 소스 상태를 그대로 볼 수 있도록.
 
 이어서 사용한 T06 최종 결과: [archive/t06/](archive/t06/) — T06 소스 이력이 이 브랜치의 조상 커밋으로 포함되어 있다(T07-C77/C78).
 
